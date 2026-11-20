@@ -11,6 +11,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build', action='store_true')
     parser.add_argument('--live', action='store_true', help='Requires a separate explicitly approved privacy scope; no scope is created')
+    parser.add_argument('--continuation', help='Name of a separately approved continuation receipt')
     args = parser.parse_args()
     if args.build:
         data = build()
@@ -20,7 +21,9 @@ def main():
         DIRECTORY.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(data, indent=2)+'\n')
     if args.live:
-        from app.evaluation.document_suite_runner import run
+        from app.evaluation.document_suite_runner import run, select_continuation
+        if args.continuation:
+            select_continuation(args.continuation)
         run()
     value = snapshot()
     print(json.dumps({k: value[k] for k in ('n_documents','n_cases','planned_rows','recorded_rows','max_provider_calls')}, indent=2))

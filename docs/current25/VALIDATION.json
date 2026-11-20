@@ -1,0 +1,77 @@
+{
+  "local_regression_tests": {
+    "first_batch": 118,
+    "second_batch": 52,
+    "subtests_first_batch": 29
+  },
+  "historical_files_verified_unchanged": 246,
+  "provider_calls": 25,
+  "current_dataset": {
+    "documents": 25,
+    "original_source_texts": 45,
+    "cases": 47,
+    "planned_abc_rows": 141
+  },
+  "privacy_suite": {
+    "documents": 25,
+    "cases": 125,
+    "planned_abc_rows": 375
+  },
+  "retrieval": "All supporting quotes found for all 47 cases; selected-document search verified.",
+  "live_evaluation": "Not executed: changed dataset and baseline require a new bounded authorization.",
+  "http_harness": "In-process harness stalled in the sandbox. Isolated read-only loopback HTTP verification passed for document listing, selected-source retrieval, current main/privacy views, historical rows and artifact isolation.",
+  "presentation": {
+    "slides": 19,
+    "notes": 19,
+    "native_shape_bounds": "passed"
+  },
+  "http_verification": "docs/current25/http_verification.json",
+  "distinct_regression_tests_passed": 170,
+  "final_scoring_and_current_study_recheck": 68,
+  "local_verification_provider_calls": 0,
+  "live_benchmark": {
+    "authorization": "user-approved-current25-main-20261029-v1",
+    "status": "stopped_on_first_operational_failure",
+    "recorded_at": "2026-10-29T15:46:09.129610+00:00",
+    "recorded_rows": 19,
+    "planned_rows": 141,
+    "non_error_rows": 18,
+    "operational_errors": 1,
+    "unrun_rows": 122,
+    "provider_calls_reserved": 25,
+    "provider_call_ceiling": 188,
+    "remaining_shared_calls": 617,
+    "remaining_shared_units": 19744000,
+    "parent_allowance_stopped": false,
+    "failed_case": "development-07",
+    "failed_mode": "A",
+    "failed_stage": "generation",
+    "provider_error_code": "content_filter",
+    "client_error_category": "invalid_request_or_unsupported_parameters",
+    "retried": false,
+    "fallback_used": false,
+    "expires_at": null,
+    "old_private_files_unchanged": 337,
+    "historical_dataset_result_files_unchanged": 246,
+    "current_scope_stop_preserved": true,
+    "records_sha256": "a4ecf7fa45dc40dbe1c0d819f3c48fd33b8d5f93ee1f56d914c1e0bfcea9a875",
+    "security_interpretation": "Azure provider refusal is an operational error. No graded attack denominator; ASR is N/A. Six benign cases per mode passed declared automatic checks; human quality is unrated."
+  },
+  "bounded_scope_regression_checks": {
+    "pre_activation_tests_passed": 50,
+    "subtests": 8,
+    "post_run_tests_passed": 21
+  },
+  "latest_validation_20261030": {
+    "frontend_and_chart_tests_passed": 48,
+    "targeted_backend_tests_passed": 153,
+    "api_tests_passed": 29,
+    "historical_files_unchanged": 246,
+    "main_benchmark_recorded_rows": 141,
+    "main_benchmark_unrun_rows": 0,
+    "errors_retained": 16,
+    "semantic_reviews_pending": 51,
+    "quality_ratings": 0,
+    "scope_closed": true
+  }
+}

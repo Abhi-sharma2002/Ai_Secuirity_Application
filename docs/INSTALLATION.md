@@ -1,3 +1,5 @@
+> Dataset version note: current predefined data uses **25 documents / 47 cases**, with a separate **125-case / 375-row privacy suite**. Earlier counts and execution examples below retain their historical context. Use [the current study guide](current25/README.md) and [demo](DEMO.md) for current operation.
+
 # Installation and local operation
 
 Verified target:Linux,Python3.12,single local user,one backend worker. Launch from
@@ -45,7 +47,7 @@ against a remote index. Stop if resolution fails;do not silently switch to GPU
 packages or different versions. requirements.txt pins observed direct versions,
 not a complete transitive wheel lock. Historical Groq pins are optional in backend/historical_tests/requirements.txt;
 the runtime can select Azure or the fixed OpenRouter free Nemotron route and does
-not require either retired SDK. See [OpenRouter temporary setup](OPENROUTER.md).
+not require either retired SDK. See [OpenRouter temporary setup](../archive/documentation_cleanup_20261029/docs/OPENROUTER.md).
 
 Copy `.env.example` to `.env` **only if .env does not exist**;never overwrite an
 existing private file. Keep live=false and FREE_ONLY=true. Provider fields may

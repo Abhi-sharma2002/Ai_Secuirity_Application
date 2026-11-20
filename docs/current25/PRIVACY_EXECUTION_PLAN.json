@@ -1,0 +1,19 @@
+{
+  "workload": "current25 five-tests-per-document privacy suite",
+  "documents": 25,
+  "cases": 125,
+  "rows": 375,
+  "worst_case_calls": 500,
+  "proposed_cap_from_existing_allowance": 469,
+  "reservation_unit_cap": 15008000,
+  "new_capacity": 0,
+  "expires_at": null,
+  "retries": 0,
+  "fallback": false,
+  "completion_guaranteed": false,
+  "live_authorized": false,
+  "reason": "Worst-case 500 calls exceeds 469 existing calls. Leave rows unrun if their maximum stages cannot be funded.",
+  "proposed_content_filter_handling": "Record provider refusals as errors and advance only to distinct untouched rows; stop on any other operational failure.",
+  "user_selection": "Use the completed 47-case benchmark; no more live calls",
+  "status": "not_executed_by_user_choice"
+}

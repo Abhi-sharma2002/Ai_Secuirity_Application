@@ -1,3 +1,5 @@
+> Dataset version note: the current predefined study is **25 documents / 47 cases**. Earlier dataset counts, execution logs and measured rates below describe their historical versions. For current status, use [the current study guide](current25/README.md).
+
 # Current evaluation implementation · 26 October 2026
 
 See [current checkpoint](COMPLETION_STATUS.md), [evaluation methodology](EVALUATION_METHODOLOGY.md), and [case-by-case evidence](../results/CASE_EVALUATION.md). Detailed local evaluation is implemented; full live comparison and genuine human review remain incomplete. Earlier entries below are history.
@@ -5,7 +7,7 @@ See [current checkpoint](COMPLETION_STATUS.md), [evaluation methodology](EVALUAT
 ## Current live completion · 26 October 2026
 
 See [current completion status](COMPLETION_STATUS.md) and
-[live verification evidence](END_TO_END_COMPLETION_20261026.md).
+[live verification evidence](../archive/documentation_cleanup_20261029/docs/END_TO_END_COMPLETION_20261026.md).
 The frontend has generated a real supported Azure answer. The current full
 comparison stopped on an Azure content-filter refusal after 18 benign answers;
 this is a provider error, not a defense win. Earlier entries below are history.
@@ -268,7 +270,7 @@ No application defect or production fix needed;only verification runner/tracking
 
 ## Roadmap Phase9A completed · 23 October 2026
 
-Current roadmap: [ROADMAP_STATUS.md](ROADMAP_STATUS.md). Completed only9A in this turn. No production runtime/provider migration, Phase10 workflow or Phase11/13 execution performed. Reused actual saved Azure/local/metrics evidence; code existence alone was not completion evidence. Earlier mixed-provider active tests demonstrably failed after Azure-only migration. Preserved exact six pre-change test sources (including uncommitted content) and three active document versions with SHA256 inventories. Retired NIM runtime assertions are outside active discovery, not silently skipped or counted passed. Current endpoint/content checks and generic runtime contract retain relevant behavior coverage; mapping in backend/tests/README.md.
+Current roadmap: [ROADMAP_STATUS.md](../archive/documentation_cleanup_20261029/docs/ROADMAP_STATUS.md). Completed only9A in this turn. No production runtime/provider migration, Phase10 workflow or Phase11/13 execution performed. Reused actual saved Azure/local/metrics evidence; code existence alone was not completion evidence. Earlier mixed-provider active tests demonstrably failed after Azure-only migration. Preserved exact six pre-change test sources (including uncommitted content) and three active document versions with SHA256 inventories. Retired NIM runtime assertions are outside active discovery, not silently skipped or counted passed. Current endpoint/content checks and generic runtime contract retain relevant behavior coverage; mapping in backend/tests/README.md.
 
 Generic environment/evaluator/exposure/planning/readiness tests now use explicit public dummy settings, temporary fixtures and adapter/HTTP doubles. Working-directory subprocess tests override private provider inputs. Resume tests no longer repeatedly parse the frozen corpus; real dataset count evidence is reused rather than replaced with fake results. Updated Azure handover, report, current decision authority and review binding example; historical evidence remains untouched.
 
@@ -287,7 +289,7 @@ LLM_BACKEND=retired-invalid-backend LIVE_LLM_ENABLED=true FREE_ONLY=false AZURE_
 The deliberately bad/enabled flags above are input to a disposable test process; its fixtures override them. They never enable the running application or change root.env. No full regression repeated. Next is Phase10: current actual upload/extract/search/replace/delete using isolated disposable storage and the cached real embedding model. Azure inputs are not a prerequisite for10. Phase11 missing inputs were reported once;12 preparation/calculation evidence remains reusable, human semantic review pending.
 
 
-Current roadmap authority: [ROADMAP_STATUS.md](ROADMAP_STATUS.md). Dated entries below are historical evidence with their original scope; obsolete provider/status statements are superseded by the roadmap and Azure setup guide.
+Current roadmap authority: [ROADMAP_STATUS.md](../archive/documentation_cleanup_20261029/docs/ROADMAP_STATUS.md). Dated entries below are historical evidence with their original scope; obsolete provider/status statements are superseded by the roadmap and Azure setup guide.
 
 ## Azure-only implementation, live deferred · 22–23 October 2026 (India)
 
@@ -306,7 +308,7 @@ Demonstrated defects: repeated JSON decision keys could overwrite true with fals
 
 Preservation verified:68 inventoried stored/frozen/ledger/adapter files unchanged, plus3 private-file metadata records. No provider calls/downloads, service restart, live enablement, approval/expiry/reservation/history change. Fix is on disk; existing running services were intentionally not restarted. Full A/B/C live integration remains incomplete, screening/answer semantics unverified, no effectiveness claim.
 
-[PHASE8_SCREENING_VERIFICATION.md](PHASE8_SCREENING_VERIFICATION.md) gives per-requirement evidence and exact Phase9 gaps: current NVIDIA paired/end-to-end/partial/resume export audit; timeout and validation/source execution-identity freeze; stage-usage/unknown/error/report/review round trips; unresolved semantics/exposure and exposed-final limitations; authorized live integration/adjudication. Phase9 not started.
+[PHASE8_SCREENING_VERIFICATION.md](../archive/documentation_cleanup_20261029/docs/PHASE8_SCREENING_VERIFICATION.md) gives per-requirement evidence and exact Phase9 gaps: current NVIDIA paired/end-to-end/partial/resume export audit; timeout and validation/source execution-identity freeze; stage-usage/unknown/error/report/review round trips; unresolved semantics/exposure and exposed-final limitations; authorized live integration/adjudication. Phase9 not started.
 
 
 ## Ask capacity correctly blocked after exhausted allowance · 22 October 2026
@@ -367,7 +369,7 @@ Configured prepared `nvidia_nim` adapter for `https://integrate.api.nvidia.com/v
 
 Three added hosted-specific offline checks passed in 0.274s (blocked sockets/synthetic transport): exact A payload/endpoint/model/settings, HTTPS+Bearer requirement, 202 no-poll stop. Reused prior adapter evidence. Added safe running-configuration readiness fields and 200-only completion handling. compileall/diff checks passed. No ledger/private-approval/frozen-data/experiment-file changes in preservation check. No new reservations or budget/expiry/history changes. Groq allowance remains exhausted; Phase6/full A/B/C incomplete.
 
-[NVIDIA_HOSTED_CONFIGURATION.md](NVIDIA_HOSTED_CONFIGURATION.md) lists exact one-call/32000-unit NVIDIA approval fields, account/free eligibility/quota/capability confirmations, missing local key action and separate execution authorization still required. Configuration is observed; live-test readiness is blocked. Evidence: nvidia-hosted-offline-v1.log and nvidia-hosted-runtime-v1.json.
+[NVIDIA_HOSTED_CONFIGURATION.md](../archive/documentation_cleanup_20261029/docs/NVIDIA_HOSTED_CONFIGURATION.md) lists exact one-call/32000-unit NVIDIA approval fields, account/free eligibility/quota/capability confirmations, missing local key action and separate execution authorization still required. Configuration is observed; live-test readiness is blocked. Evidence: nvidia-hosted-offline-v1.log and nvidia-hosted-runtime-v1.json.
 
 
 ## Self-hosted NVIDIA NIM preparation · 22 October 2026 (India)
@@ -401,7 +403,7 @@ Required action: replace only GROQ_API_KEY locally in root .env with an active k
 
 Completed independent offline work while Phase 6 remains blocked by both recorded HTTP 401 attempts; Phase 6 is not complete. Current `app.rag.assistant` → `app.llm.client` → installed ChatGroq/Groq path inspected; no legacy defenses changes or authentication investigation. No demonstrated runtime defect and no production code change in this phase.
 
-Mapped all seven requirements in [PHASE7_INSTRUCTION_SEPARATION.md](PHASE7_INSTRUCTION_SEPARATION.md). Six new socket-blocked, actual-SDK/in-memory-transport checks verify A/B settings/question/evidence parity, exact trusted-message merge, role/delimiter/metadata spoofing kept in user JSON, preserved source/provenance, evaluator-only sentinel exclusion, empty-evidence no-call abstention and unchanged benign/mixed content. Synthetic answers establish control flow/source-ID propagation only. Reused sufficient Phase 4/5 retrieval/source-integrity and current dataset/routing evidence. Structural role isolation does not prove model adherence, injection resistance, benign quotation recognition or semantic support.
+Mapped all seven requirements in [PHASE7_INSTRUCTION_SEPARATION.md](../archive/documentation_cleanup_20261029/docs/PHASE7_INSTRUCTION_SEPARATION.md). Six new socket-blocked, actual-SDK/in-memory-transport checks verify A/B settings/question/evidence parity, exact trusted-message merge, role/delimiter/metadata spoofing kept in user JSON, preserved source/provenance, evaluator-only sentinel exclusion, empty-evidence no-call abstention and unchanged benign/mixed content. Synthetic answers establish control flow/source-ID propagation only. Reused sufficient Phase 4/5 retrieval/source-integrity and current dataset/routing evidence. Structural role isolation does not prove model adherence, injection resistance, benign quotation recognition or semantic support.
 
 Exact focused outcome: **6 passed in 1.747s**, exit 0, no skips/failures. compileall and git diff --check exited 0. Log: `docs/evidence/phase7-separation-offline-tests-v1.log`. All temporary approval/ledger/experiment state was disposable. Before/after integrity check: 60 inventoried frozen/benchmark/historical result/private/runtime files unchanged. Effective live disabled/free-only true; no provider calls, model downloads, credential/allowance/expiry/stop/ledger or settings edits.
 

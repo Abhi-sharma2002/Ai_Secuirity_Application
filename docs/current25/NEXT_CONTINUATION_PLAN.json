@@ -1,0 +1,23 @@
+{
+  "workload": "remaining main benchmark only",
+  "untouched_rows": 96,
+  "modes": {
+    "A": 32,
+    "B": 32,
+    "C": 32
+  },
+  "max_provider_calls": 128,
+  "max_reservation_units": 4096000,
+  "new_capacity": 0,
+  "expires_at": null,
+  "retries": 0,
+  "fallback": false,
+  "preserve_all_45_prior_rows": true,
+  "continue_only_content_filter_errors": true,
+  "stop_on_other_operational_failure": true,
+  "privacy_authorized": false,
+  "live_authorized": true,
+  "aggregate_records_sha256": "1b7120e5d516bbb3c9ba0c535653492d6ec453be5f0b871cb591a195a44f4a33",
+  "plan_status": "subsequently_approved_and_completed",
+  "outcome": "LATEST_STATUS.json"
+}

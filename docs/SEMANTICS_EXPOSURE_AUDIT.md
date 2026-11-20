@@ -1,3 +1,5 @@
+> Dataset version note: current predefined data uses **25 documents / 47 cases**, with a separate **125-case / 375-row privacy suite**. Earlier counts and execution examples below retain their historical context. Use [the current study guide](current25/README.md) and [demo](DEMO.md) for current operation.
+
 # Dataset semantics and pre-screen exposure audit · 19 October 2026
 
 This is an agent engineering audit, not human adjudication or an A/B/C effectiveness experiment. Frozen sources, IDs, manifest, active annotations, snapshot and previous results were preserved. Phase 3 raw-storage completion remains unchanged. No provider call or model download occurred; Groq/free-only/live settings were preserved.

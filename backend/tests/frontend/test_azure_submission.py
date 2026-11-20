@@ -4,7 +4,7 @@ from unittest.mock import patch
 from backend.tests.frontend.test_openrouter_submission import application, ask_page
 
 
-def test_azure_scope_without_time_expiry_is_shown_explicitly():
+def test_allowance_banner_is_hidden_while_submission_gates_remain():
     calls=[]
     capacity={'enabled':True,'remaining_calls':8,'remaining_reserved_tokens':256000,
               'expires_at':None,'mode_available':{'A':True,'B':True,'C':True}}
@@ -12,7 +12,7 @@ def test_azure_scope_without_time_expiry_is_shown_explicitly():
          patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
         app=ask_page('azure_openai')
         assert not app.exception
-        assert any('No time expiry' in item.value for item in app.caption)
+        assert not any('No time expiry' in item.value or 'Remaining:' in item.value for item in app.caption)
         assert not next(b for b in app.button if b.label=='Ask once via Azure OpenAI').disabled
         assert all(method=='GET' for method,_,_ in calls)
 
@@ -37,7 +37,7 @@ def test_azure_selected_form_labels_and_submission_are_provider_aware():
         assert sum(method=='POST' for method,_,_ in calls)==1
 
 
-def test_azure_missing_configuration_stays_disabled_but_local_search_available():
+def test_azure_missing_configuration_stays_disabled_and_local_option_is_hidden():
     calls=[]
     capacity={'enabled':False, 'reason':'Azure configuration incomplete',
               'mode_available':{'A':False,'B':False,'C':False}}
@@ -45,8 +45,8 @@ def test_azure_missing_configuration_stays_disabled_but_local_search_available()
          patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
         app=ask_page('azure_openai')
         assert next(b for b in app.button if b.label=='Ask once via Azure OpenAI').disabled
-        next(r for r in app.radio if r.label=='Document handling').set_value('local').run()
-        assert not next(b for b in app.button if b.label=='Search locally').disabled
+        assert not any(r.label=='Document handling' for r in app.radio)
+        assert not any(b.label=='Search locally' for b in app.button)
         assert all(method=='GET' for method,_,_ in calls)
 
 

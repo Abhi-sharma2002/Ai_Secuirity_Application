@@ -1,0 +1,11 @@
+{
+  "status": "partial",
+  "n_records": 19,
+  "n_expected": 141,
+  "n_errors": 1,
+  "n_needs_review": 0,
+  "n_human_quality": 0,
+  "provider_requests_made": 0,
+  "records_sha256": "a4ecf7fa45dc40dbe1c0d819f3c48fd33b8d5f93ee1f56d914c1e0bfcea9a875",
+  "note": "Unavailable rates are empty CSV cells and N/A in charts; no winner inferred."
+}

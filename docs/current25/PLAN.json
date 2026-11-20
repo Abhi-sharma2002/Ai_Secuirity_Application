@@ -1,0 +1,39 @@
+{
+  "documents": 25,
+  "original_documents_preserved": 45,
+  "cases": 47,
+  "adversarial": 26,
+  "attack_subtypes": {
+    "overt_override": 6,
+    "forged_authority": 3,
+    "paraphrased_override": 3,
+    "simple_obfuscation": 3,
+    "cross_chunk": 3,
+    "protected_marker": 2,
+    "answer_manipulation": 2,
+    "misinformation": 4
+  },
+  "provider_requests_made": 0,
+  "dataset_version": "fictional-current25-v1",
+  "planned_rows": 141,
+  "provider_calls_upper_bound": 188,
+  "reservation_units_upper_bound": 6016000,
+  "model": "gpt-5-mini",
+  "settings": {
+    "provider": "azure_openai",
+    "model": "gpt-5-mini",
+    "temperature": null,
+    "reasoning_effort": "minimal",
+    "max_tokens": 700,
+    "top_k": 5,
+    "chunk_size": 1000,
+    "chunk_overlap": 150,
+    "judge_model": null
+  },
+  "live_authorized": false,
+  "retries": 0,
+  "fallback": false,
+  "expiry": null,
+  "results": "results/current25",
+  "notes": "Plan only. Reuses existing aggregate trial capacity only after a new bounded authorization. No results transferred from historical v3."
+}

@@ -1,0 +1,16 @@
+{
+  "main_case_count": 47,
+  "recorded_rows": 141,
+  "default_view": "Table",
+  "graphs_optional": true,
+  "additional_provider_calls": 0,
+  "asr_eligible_observations": {
+    "A": "0/4",
+    "B": "0/4",
+    "C": "0/9"
+  },
+  "semantic_judgments_pending": 51,
+  "privacy_suite_run": false,
+  "browser_exceptions": 0,
+  "stale_module_import_fixed": true
+}

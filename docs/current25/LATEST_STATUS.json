@@ -1,0 +1,29 @@
+{
+  "status": "all_main_rows_recorded",
+  "counts": {
+    "recorded": 141,
+    "expected": 141,
+    "missing": 0,
+    "errors": 16,
+    "needs_review": 51,
+    "quality_reviewed": 0
+  },
+  "provider_filter_errors": 15,
+  "interrupted_outcomes": 1,
+  "calls_by_scope": {
+    "current25_main_20261029_v1": 25,
+    "current25_untouched_20261030_v2": 30,
+    "current25_remaining_20261030_v3": 118
+  },
+  "remaining_existing_calls": 469,
+  "parent_stopped": false,
+  "original_19_rows_preserved": true,
+  "historical_files_unchanged": 246,
+  "scope_closed": true,
+  "retries": 0,
+  "fallback": false,
+  "current_privacy_rows_recorded": 0,
+  "quality_ratings": 0,
+  "semantic_reviews_pending": 51,
+  "records_sha256": "0d27a96fc9375400076657417b2652d60c398d09e95610d6b116c1ac599aac84"
+}

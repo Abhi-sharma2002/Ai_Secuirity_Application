@@ -12,7 +12,8 @@ from app.defenses.contracts import Answer
 from app.llm import client as live
 
 
-PROMPT_HASH = hashlib.sha256((GROUND + SEPARATION + SCREEN + output_screening.VERSION + output_screening.POLICY_HASH).encode()).hexdigest()
+ANSWER_SCHEMA_VERSION = 'answer-source-id-enum-required-v2'
+PROMPT_HASH = hashlib.sha256((GROUND + SEPARATION + SCREEN + output_screening.VERSION + output_screening.POLICY_HASH + ANSWER_SCHEMA_VERSION).encode()).hexdigest()
 
 
 def messages(mode, question, evidence):
@@ -31,7 +32,8 @@ def respond(question, mode, *, initial=None, snapshot_items=None, run_context=No
         'reservation_units': 0, 'reservation_ids': [], 'calls': [], 'screening': None, 'prompt_hash': PROMPT_HASH, 'snapshot': [], 'omitted_ids': []}
     result['defense_versions'] = {'grounding': baseline.PROMPT_VERSION,
         'separation': instruction_separation.PROMPT_VERSION if mode in {'B', 'C'} else None,
-        'output_screening': output_screening.VERSION if mode == 'C' else None}
+        'output_screening': output_screening.VERSION if mode == 'C' else None,
+        'answer_contract': ANSWER_SCHEMA_VERSION}
     try:
         retrieval = search(question, snapshot_items) if initial is None else initial
         evidence = retrieval['hits']
@@ -58,7 +60,10 @@ def respond(question, mode, *, initial=None, snapshot_items=None, run_context=No
             result.update(status='insufficient_evidence', answer='No usable evidence remains after screening.')
             return result
         call = live.call if _evaluation_call is None else _evaluation_call
-        raw, trace = call(messages(mode, question, evidence), Answer.model_json_schema(), 'generation', calls[-1])
+        answer_schema = Answer.model_json_schema()
+        answer_schema['properties']['source_ids']['minItems'] = 1
+        answer_schema['properties']['source_ids']['items']['enum'] = list(dict.fromkeys(h['id'] for h in evidence))
+        raw, trace = call(messages(mode, question, evidence), answer_schema, 'generation', calls[-1])
         result['calls'].append(trace)
         answer = Answer.model_validate_json(raw)
         lookup = {h['id']: h for h in evidence}

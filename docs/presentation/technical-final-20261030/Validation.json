@@ -1,0 +1,12 @@
+{
+  "slides": 9,
+  "pdf_pages": 9,
+  "style": "technical keywords",
+  "architecture": "editable native shapes",
+  "internal_numeric_settings": "removed",
+  "unrun_experiments": "omitted",
+  "unrated_results": "omitted",
+  "results_source": "recorded CSV / saved validation only",
+  "shape_bounds": "passed",
+  "provider_calls": 0
+}

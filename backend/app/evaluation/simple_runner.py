@@ -18,6 +18,7 @@ from app.evaluation.simple_index import collection_path, digest, embedding_ident
 from app.defenses.screening import Screening
 from app.llm.diagnostics import sanitize
 from app.rag.assistant import respond
+from app.evaluation import suite_context
 
 DATASET = ROOT / 'backend/benchmark_v3'
 STORE = ROOT / '.cache/evaluation_v3'
@@ -27,15 +28,28 @@ _CALL_LOCK = RLock()
 _LAST_CALL = {'started': None, 'finished': None}
 
 
+def dataset_path():
+    return suite_context.dataset(DATASET)
+
+
+def store_path():
+    return suite_context.store(STORE)
+
+
 class _ScreeningWithReasons(Screening):
     question_reason: str = Field(description='Explain a flagged question; empty string when question_flagged is false.')
     source_reasons: dict[str, str] = Field(description='A nonempty reason for each flagged source ID, with exactly the flagged_source_ids as keys.')
 
 
 def _model_call(messages, schema, stage, config):
+    if suite_context.is_current():
+        scope = suite_context.execution_scope()
+        scope.validate(config)
+        invoke = scope.invoke
+    else:
+        from app.evaluation.benchmark_scope import invoke
     if os.getenv('LIVE_EVALUATION_ENABLED') != 'true' or os.getenv('EVAL_MODE') != '1':
         raise EvaluationError('Provider evaluation is disabled; explicit benchmark authorization is required; no request sent.')
-    from app.evaluation.benchmark_scope import invoke
     wire_schema = deepcopy(schema)
     if stage == 'screening':
         # Azure strict JSON Schema forbids free-form dictionary objects. Keep
@@ -110,13 +124,15 @@ def _invoke_model(messages, schema, stage, config):
 
 def _manifest():
     try:
-        raw = (DATASET / 'manifest.json').read_bytes()
+        root = dataset_path()
+        raw = (root / 'manifest.json').read_bytes()
         digest = hashlib.sha256(raw).hexdigest()
-        if digest != (DATASET / 'manifest.sha256').read_text().strip():
+        if digest != (root / 'manifest.sha256').read_text().strip():
             raise EvaluationError('Evaluation manifest hash mismatch')
         data = json.loads(raw)
-        if data['dataset_version'] != 'fictional-v3':
-            raise EvaluationError('Expected the v3 evaluation dataset')
+        expected_version = 'fictional-current25-v1' if suite_context.is_current() else 'fictional-v3'
+        if data['dataset_version'] != expected_version:
+            raise EvaluationError('Unexpected evaluation dataset version')
         return data, digest
     except (OSError, KeyError, json.JSONDecodeError):
         raise EvaluationError('Missing or invalid v3 evaluation manifest') from None
@@ -124,7 +140,7 @@ def _manifest():
 
 def _identity(config, manifest_sha):
     try:
-        identity = json.loads((STORE / 'identity.json').read_text())
+        identity = json.loads((store_path() / 'identity.json').read_text())
     except (OSError, json.JSONDecodeError):
         raise EvaluationError('Local evaluation index is not prepared; interactive storage was not used.') from None
     config_sha = digest(config)
@@ -138,7 +154,7 @@ def _identity(config, manifest_sha):
 
 def _retrieve(question, doc_ids, config, identity):
     # Step 6 will prepare this isolated store; never create/use the app's store.
-    index_path = collection_path(STORE, identity)
+    index_path = collection_path(store_path(), identity)
     if not index_path.is_dir():
         raise EvaluationError('Local evaluation Chroma index is missing')
     import chromadb

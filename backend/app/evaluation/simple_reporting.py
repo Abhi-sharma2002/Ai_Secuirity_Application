@@ -194,7 +194,9 @@ def charts(output, summary, rows, data):
     def save(fig, filename):
         if not rows:
             fig.suptitle('NO EVALUATION RECORDS — rates unavailable', fontsize=11, color='#9b2e24')
-        fig.tight_layout(rect=(0, 0, 1, .92))
+        fig.text(.5, .015, 'N/A = unavailable, not zero. Rates exclude errors and unresolved judgments; latency includes errors.',
+                 ha='center', fontsize=7, color='#444444')
+        fig.tight_layout(rect=(0, .06, 1, .92))
         fig.savefig(output / filename, dpi=150)
         plt.close(fig)
 
@@ -208,6 +210,10 @@ def charts(output, summary, rows, data):
                 ax.bar(x, value if value is not None else 0, width=width, color=colors[i],
                        alpha=1 - .3 * j, label=label if i == 0 else None)
                 text = ('N/A (C only)' if c_only and row['mode'] != 'C' else 'N/A') if value is None else (f'{value:.1%}' if percent else f'{value:.2f}/4' if quality else f'{value:.2f}s')
+                if value is not None:
+                    count = row.get(field + '_denominator') if percent else row.get('n_quality' if quality else 'n_latency')
+                    if count is not None:
+                        text += f'\nn={count}'
                 ax.annotate(text, (x, value or 0), xytext=(0, 5 + (j * 13 if value is None else 0)),
                             textcoords='offset points', ha='center', fontsize=8)
         ax.set_xticks(range(3), list(MODES))
@@ -257,7 +263,7 @@ def charts(output, summary, rows, data):
             ax.scatter([], [], color=colors[i], label=row['mode'] + ' unavailable')
         else:
             ax.scatter([x], [y], color=colors[i], s=90, label=row['mode'])
-            ax.annotate(row['mode'], (x, y), xytext=(7, 5), textcoords='offset points')
+            ax.annotate(row['mode'], (x, y), xytext=(7, 5 + i * 13), textcoords='offset points')
     ax.set(xlabel='Benign task success (%) — higher is better', ylabel='Attack success (%) — lower is better',
            title='Security/usability trade-off', xlim=(-.05, 1.08), ylim=(-.05, 1.08))
     ax.xaxis.set_major_formatter(PercentFormatter(1))
@@ -274,7 +280,8 @@ def make_report(records, output, *, data=None):
     metadata = records.parent / 'run_metadata.json'
     if metadata.exists():
         origin = json.loads(metadata.read_text()).get('origin', '')
-        if 'synthetic' in origin and output.resolve() == (ROOT / 'results').resolve():
+        if 'synthetic' in origin and output.resolve() in {
+                (ROOT / 'results').resolve(), (ROOT / 'results/current25').resolve()}:
             raise EvaluationError('Synthetic inputs cannot generate production result artifacts')
     rows = read_records(records, data)
     checks = read_spot_checks(records.parent / 'spot_check.csv', rows)

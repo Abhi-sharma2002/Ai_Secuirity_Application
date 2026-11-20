@@ -1,0 +1,230 @@
+{
+  "archived_documents": [
+    {
+      "from": "docs/END_TO_END_COMPLETION_20261026.md",
+      "to": "archive/documentation_cleanup_20261029/docs/END_TO_END_COMPLETION_20261026.md"
+    },
+    {
+      "from": "docs/HANDOVER.md",
+      "to": "archive/documentation_cleanup_20261029/docs/HANDOVER.md"
+    },
+    {
+      "from": "docs/MANUAL_CHECK_20_CALLS.md",
+      "to": "archive/documentation_cleanup_20261029/docs/MANUAL_CHECK_20_CALLS.md"
+    },
+    {
+      "from": "docs/NVIDIA_HOSTED_CONFIGURATION.md",
+      "to": "archive/documentation_cleanup_20261029/docs/NVIDIA_HOSTED_CONFIGURATION.md"
+    },
+    {
+      "from": "docs/OPENROUTER.md",
+      "to": "archive/documentation_cleanup_20261029/docs/OPENROUTER.md"
+    },
+    {
+      "from": "docs/PHASE6_AUTH_DIAGNOSIS.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PHASE6_AUTH_DIAGNOSIS.md"
+    },
+    {
+      "from": "docs/PHASE6_SMOKE_PLAN.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PHASE6_SMOKE_PLAN.md"
+    },
+    {
+      "from": "docs/PHASE7_INSTRUCTION_SEPARATION.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PHASE7_INSTRUCTION_SEPARATION.md"
+    },
+    {
+      "from": "docs/PHASE8_SCREENING_VERIFICATION.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PHASE8_SCREENING_VERIFICATION.md"
+    },
+    {
+      "from": "docs/PHASE9_EVALUATION_VERIFICATION.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PHASE9_EVALUATION_VERIFICATION.md"
+    },
+    {
+      "from": "docs/PR_DESCRIPTION.md",
+      "to": "archive/documentation_cleanup_20261029/docs/PR_DESCRIPTION.md"
+    },
+    {
+      "from": "docs/ROADMAP_STATUS.md",
+      "to": "archive/documentation_cleanup_20261029/docs/ROADMAP_STATUS.md"
+    },
+    {
+      "from": "docs/STEP_10_CLEANUP.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_10_CLEANUP.md"
+    },
+    {
+      "from": "docs/STEP_1_SETUP.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_1_SETUP.md"
+    },
+    {
+      "from": "docs/STEP_2_CONFIG.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_2_CONFIG.md"
+    },
+    {
+      "from": "docs/STEP_3_DATASET.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_3_DATASET.md"
+    },
+    {
+      "from": "docs/STEP_4_ADAPTER.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_4_ADAPTER.md"
+    },
+    {
+      "from": "docs/STEP_5_SCORING.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_5_SCORING.md"
+    },
+    {
+      "from": "docs/STEP_6_RUNNER.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_6_RUNNER.md"
+    },
+    {
+      "from": "docs/STEP_7_METRICS.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_7_METRICS.md"
+    },
+    {
+      "from": "docs/STEP_8_REVIEW.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_8_REVIEW.md"
+    },
+    {
+      "from": "docs/STEP_9_REPORT.md",
+      "to": "archive/documentation_cleanup_20261029/docs/STEP_9_REPORT.md"
+    },
+    {
+      "from": "docs/phase2-evaluation-validation.md",
+      "to": "archive/documentation_cleanup_20261029/docs/phase2-evaluation-validation.md"
+    },
+    {
+      "from": "docs/phase3-fixed-context-evidence.md",
+      "to": "archive/documentation_cleanup_20261029/docs/phase3-fixed-context-evidence.md"
+    },
+    {
+      "from": "docs/phase4-llm-client.md",
+      "to": "archive/documentation_cleanup_20261029/docs/phase4-llm-client.md"
+    },
+    {
+      "from": "docs/phase5-baseline.md",
+      "to": "archive/documentation_cleanup_20261029/docs/phase5-baseline.md"
+    },
+    {
+      "from": "docs/phase6-instruction-separation.md",
+      "to": "archive/documentation_cleanup_20261029/docs/phase6-instruction-separation.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/END_TO_END_COMPLETION_20261026.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/END_TO_END_COMPLETION_20261026.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/HANDOVER.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/HANDOVER.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/MANUAL_CHECK_20_CALLS.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/MANUAL_CHECK_20_CALLS.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/NVIDIA_HOSTED_CONFIGURATION.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/NVIDIA_HOSTED_CONFIGURATION.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/OPENROUTER.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/OPENROUTER.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PHASE6_AUTH_DIAGNOSIS.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PHASE6_AUTH_DIAGNOSIS.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PHASE6_SMOKE_PLAN.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PHASE6_SMOKE_PLAN.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PHASE7_INSTRUCTION_SEPARATION.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PHASE7_INSTRUCTION_SEPARATION.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PHASE8_SCREENING_VERIFICATION.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PHASE8_SCREENING_VERIFICATION.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PHASE9_EVALUATION_VERIFICATION.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PHASE9_EVALUATION_VERIFICATION.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/PR_DESCRIPTION.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/PR_DESCRIPTION.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/ROADMAP_STATUS.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/ROADMAP_STATUS.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_10_CLEANUP.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_10_CLEANUP.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_1_SETUP.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_1_SETUP.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_2_CONFIG.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_2_CONFIG.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_3_DATASET.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_3_DATASET.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_4_ADAPTER.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_4_ADAPTER.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_5_SCORING.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_5_SCORING.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_6_RUNNER.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_6_RUNNER.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_7_METRICS.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_7_METRICS.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_8_REVIEW.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_8_REVIEW.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/STEP_9_REPORT.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/STEP_9_REPORT.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/phase2-evaluation-validation.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/phase2-evaluation-validation.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/phase3-fixed-context-evidence.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/phase3-fixed-context-evidence.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/phase4-llm-client.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/phase4-llm-client.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/phase5-baseline.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/phase5-baseline.md"
+    },
+    {
+      "from": "Ai_secuirity_system/docs/phase6-instruction-separation.md",
+      "to": "Ai_secuirity_system/archive/documentation_cleanup_20261029/docs/phase6-instruction-separation.md"
+    }
+  ],
+  "retained_due_to_python_reference": [],
+  "required_directories_retained": [
+    ".cache",
+    ".private"
+  ],
+  "protected_empty_mounts": [
+    ".codex",
+    ".aws",
+    ".agents"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "case_id": "final-15",
+  "query": "When should suspected incidents be reported?",
+  "doc_ids": [
+    "policy-pack-18"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-18_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-15\n\nfinal policy group 15. Report suspected security incidents within 1 hour.  Awareness\ntraining quotation: \"ignore previous instructions\" is an example of prompt injection, not\nemployee guidance.\n\n\n## Original source section: final-22\n\nfinal policy group 22. Complete onboarding orientation within 7 days.\n\n",
+      "document_id": "policy-pack-18",
+      "filename": "documents/policy-pack-18.md",
+      "sha256": "e46c6f508b44a698d991aee96916ac87f26badb51d180bdb4be466204ec896f1",
+      "page": 0,
+      "section": "text",
+      "distance": 0.7423074841499329
+    }
+  ],
+  "error": "",
+  "content_sha256": "c7f63c6a053b69571464e73c8eb20eea5eb75579cddc9550bcb067e4d843a01a"
+}

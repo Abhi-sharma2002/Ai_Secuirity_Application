@@ -1,0 +1,11 @@
+{
+  "slides": 10,
+  "matching_pdf_pages": 10,
+  "editable_architecture": true,
+  "requirements_coverage": "all major assignment sections mapped on final slide",
+  "example_answers": false,
+  "low_level_numeric_settings": false,
+  "results": "recorded outcomes only",
+  "provider_calls": 0,
+  "shape_bounds": "passed"
+}

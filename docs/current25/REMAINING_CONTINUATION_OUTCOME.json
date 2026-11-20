@@ -1,0 +1,11 @@
+{
+  "scope": "user-approved-current25-remaining-20261030-v3",
+  "calls": 118,
+  "closed": true,
+  "stopped": false,
+  "timestamp": "2026-10-29T23:53:35.640787+00:00",
+  "recorded_rows": 96,
+  "aggregate_rows": 141,
+  "local_reporting_note": "Stale 13-row review form preserved separately, extended to 51 pending rows without inventing judgments.",
+  "provider_requests_during_report_repair": 0
+}

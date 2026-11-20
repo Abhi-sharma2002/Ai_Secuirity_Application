@@ -1,0 +1,11 @@
+{
+  "scope": "user-approved-current25-untouched-20261030-v2",
+  "calls": 30,
+  "closed": false,
+  "stopped": true,
+  "recorded_continuation_rows": 26,
+  "recorded_total_rows": 45,
+  "unrun_rows": 96,
+  "reason": "Execution process terminated by SIGTERM (exit 143); interrupted row recorded without replay. Stop-on-other-operational-failure rule applied.",
+  "provider_requests_during_finalization": 0
+}

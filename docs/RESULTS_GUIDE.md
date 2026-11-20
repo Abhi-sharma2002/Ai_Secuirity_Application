@@ -1,96 +1,28 @@
-## Current genuine development review queue
+# Reading the current results
 
-`backend/data/runtime/experiments/azure-development-12cases-v1/` contains19
-response-bound review packets and19 blank review entries:18 completed benign
-records and1 operational HTTP400 failure. Review actual sources/tasks/quality
-for completed responses; keep semantic grades null on the error.17 scheduled
-records were not executed. Do not treat them or the provider rejection as
-defense successes. Preserve approved criteria and record bindings; no grade has
-been invented or imported. The run is stopped and cannot be retried/resumed.
-See [operational summary](../archive/docs/AZURE_DEVELOPMENT_EXECUTION_20261023.md).
+All 141/141 main benchmark rows are recorded; no rows remain unrun. There are 125 non-error outcomes and 16 operational errors (15 Azure provider refusals and 1 interrupted outcome). Failed requests were not retried.
 
-# Result export and human review
+| Mode | Recorded | Benign task checks | Successful attacks / eligible attacks | Errors |
+|---|---|---|---|---|
+| A | 47/47 | 19/19 | 0/4 | 5 |
+| B | 47/47 | 19/19 | 0/4 | 5 |
+| C | 47/47 | 19/19 | 0/9 | 6 |
 
-Actual Azure development-02 baseline and paired A/B/C records now exist under
-`backend/data/runtime/experiments/azure-development-02-A-v1/` and
-`azure-development-02-ABC-v1/`. Their human judgments remain blank; use the paired
-run's `review-packets.json` and `review-template.json` for genuine human review.
-Do not pool the baseline and paired populations. Presentation fixtures remain exclusively under
-`docs/demo-fixtures/presentation-v2/`,outside application experiment storage.
-Their charts/reports are marked **SYNTHETIC VERIFICATION ONLY**. A fixture's
-boolean grade is arithmetic test data,not a real human or model finding.
+51 non-error answers still require semantic review; human quality remains unrated. Attack success and benign-task rates use only eligible automatically graded or actually reviewed outcomes. Errors, unrun cases and unresolved judgments are excluded.
 
-## Read-only export of an actual saved run
+Coverage distinguishes non-error outcomes from operational errors. Metric figures label actual eligible sample counts beside percentages. Missing human quality stays unavailable. Read the collapsed coverage, review, source evidence and diagnostic sections for the complete record.
 
-Choose an existing source experiment directory and a **new output directory
-outside that source**. This command never initializes registry storage or calls
-a provider;it rejects overwrite/nested-output attempts:
+The source of truth is `results/current25/records.csv` with its computed `summary.csv`. `coverage.png` and `metrics.png` are bound to the current raw CSV by `visualization_binding.json`. Historical 45-document rates are not mixed into the current study.
 
-```bash
-PYTHONPATH=backend MPLCONFIGDIR=/tmp/results-mpl .venv/bin/python -B -m scripts.export_experiment --source /absolute/path/to/saved-run --output /absolute/path/to/new-export
-```
+Uploaded-document charts use saved responses whose evidence belongs to current active upload versions. They are observations, not a controlled attack evaluation. The separate current five-test study remains unrun.
 
-It preserves source files,including old summaries/reports. Do not export
-different provider/model/protocol/rubric populations into one merged result.
 
-| Files | Purpose |
-|---|---|
-| summary.json | Frozen source specification,all-scheduled/common-paired populations,errors,unknowns,exposure,usage and metrics |
-| records.json / records.csv | Raw rows and flat case outcomes with separate reported tokens,reservations and missing-usage counters |
-| metrics.csv / metrics-detail.csv | Existing compact and full flattened metric exports |
-| comparison.json / comparison.csv | A/B/C comparison including ASR/task/false positives/quality/latency,denominators and review/error counts |
-| asr.png / exposed_asr.png | Reviewed attack outcomes with N/A for zero denominator |
-| benign_task_success.png | Task preservation |
-| benign_false_flags.png / benign_false_blocks.png | C-only completed-route screening rates;A/B N/A |
-| quality.png / latency.png | Human quality and observed route time;failed routes with numeric time remain in latency population |
-| review-packets.json | Actual response/evidence/criteria and bound coordinates |
-| review-template.json | Blank judgments;requires actual reviewer and notes,never automatic approval |
-| PRESENTATION.md / REPORT.md | Origin label,limitations and coverage explanation |
+Metrics opens the saved 47-case / 141-row main benchmark with a table by default; Graphs remains optional. ASR is explicitly provisional while judgments remain pending. C false positives mean normal questions or genuine supporting evidence incorrectly flagged, filtered or blocked. The separate unrun five-test view links back to the completed main benchmark. The user selected no additional live calls for this correction.
 
-Empty/unreviewed/error-only runs preserve N/A rather than inventing zero rates.
-Partial reports expose missing records and review coverage. Numbers shown in
-fixtures do not fill the empirical section of the technical report.
 
-## Review procedure
+To show the earlier nonzero rate, select Metrics / evaluation → Historical v3 results — 45 documents (older prompts), or use http://127.0.0.1:8501/?view=metrics&study=historical . Saved ASR is A 2/18 (11.1%), B 0/19 and C 0/20. The current 25-document experiment remains separate; no scores are rewritten.
 
-1. Select only a new actual experiment under its frozen identity. Read its
-   source specification and record_binding;check model/settings/protocol first.
-2. Use each packet to inspect original question,initial candidate evidence,
-   C decision/retained evidence,actual answer and cited source support. A valid
-   source ID alone is insufficient. Match precise payload spans;distinguish
-   retrieval misses,full-span exposure and supplementary terminal/cue exposure.
-3. Copy review-template.json to a private review file. Enter actual reviewer,
-   human-v1 rubric,reasoned notes,quality0–4 and independent task/attack
-   true/false/null. Benign attack grade stays null. Errors stay ungraded. Apply
-   approved phase12 semantics;E037's legacy rubric is outside this dataset.
-4. Record exposed/answering_exposed only after inspection. For cross_chunk rows,
-   fill candidate/supplied component booleans or null. A question block has no
-   answering presentation. Component labels do not change exposed-ASR arithmetic.
-5. With the identified backend stopped to release its one-worker lock,import
-   only into that new run through the existing evaluator review command:
 
-```bash
-PYTHONPATH=backend .venv/bin/python -B -m app.evaluation.experiment review --run-id ACTUAL_NEW_RUN_ID --judgments /absolute/path/to/human-review.json
-```
+Denominator explanation (historical main): each mode received the same 26 attacks. A excludes 4 errors and 4 pending judgments (18 assessed); B excludes 4 errors and 3 pending (19); C excludes 5 errors and 1 pending (20). These count assessed responses, not different questions or provider calls.
 
-ACTUAL_NEW_RUN_ID is chosen from that real run,not a new identity assigned here.
-No live flags are needed. The importer rejects stale bindings,invalid grades,
-duplicates and missing reviewer/notes before writing the batch. Identical imports
-are no-ops;changed judgments preserve review history. Per-record writes are
-atomic;the file batch is not a multi-file database transaction under crashes.
-Never use this to regrade historical runs silently.
-
-6. Re-export into a new directory. Report errors,unknowns,exposure and exact
-   denominators beside rates;compare common-evaluable pairs and all-scheduled
-   completion. Do not infer defense success from operational failures or low
-   coverage. Keep development/final and paired/end-to-end separate.
-
-## Reproduce presentation verification only
-
-```bash
-PYTHONPATH=backend HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 MPLCONFIGDIR=/tmp/demo-mpl .venv/bin/python -B -m scripts.prepare_offline_demo --output /tmp/new-synthetic-presentation
-```
-
-The destination must not exist or be under runtime storage. This imports the
-existing test_phase9_evaluation.row fixtures,not a provider. Three states:empty,
-partial/unreviewed,and labeled arithmetic. Do not copy them into genuine runs.
+The historical results page also shows a separate automatically measured C benign-control flag/block rate: 4/4 usable controls (100%), with 1 error and 14 unrun controls excluded. This small historical privacy-control subset is distinct from the main benchmark and human-reviewed FPR. No human judgments or saved grades were changed.

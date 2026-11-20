@@ -1,5 +1,14 @@
 # Standing project scope
 
+## Azure model switch, 20 November 2026
+
+The user approved switching interactive answering to their existing Azure
+gpt-5.4-mini deployment on trial credits, retaining the current interactive
+allowance identity, ceiling, consumed reservations and stop flags. No new
+capacity, paid use, benchmark execution, retries, fallback or resources are
+authorized. Use the model-specific shared `none` reasoning setting for A/B/C;
+retain historical gpt-5-mini settings and evaluation provenance.
+
 ## Current Azure trial selection, 26 October 2026
 
 The user's latest instruction stops OpenRouter and selects their already
@@ -220,3 +229,147 @@ privacy-scope identity, preserve all previous receipts/results/stops, stop on th
 first operational failure, and make no automatic retries or fallback. Actual human
 reviews remain human. Live interactive answering was also requested; it shares
 this same cumulative allowance and never increases the ceiling.
+
+## Explicit privacy reason-consistency continuation, 28 October 2026
+
+The user approved the prepared continuation by instructing "next step do it".
+Run only the 612 untouched privacy rows, capped at 695 provider calls from the
+existing remaining trial allocation. Preserve the 63 original rows, old scope,
+journal, consumed reservations and stop flag. Use the separate
+continuation-reason-consistency-v2 receipt with the recorded screening-prompt
+clarification and frozen prior-record hashes. Add no capacity or expiry, make no
+retries or fallback, and stop on the first operational failure. Worst-case demand
+exceeds this cap; leave unfinished rows unrun if capacity is exhausted.
+
+## Explicit untouched privacy continuation, 29 October 2026
+
+The user approved the explained continuation with "okay do it": only the 584
+untouched privacy rows, capped at 650 calls / 20,800,000 reservation units from
+the existing Azure trial allocation. Use the independent
+continuation-business-summary-v7 receipt. Preserve all 91 previous rows, prior
+scope identities, consumed accounting and stop flags. Record the revised B/C
+business-summary-v7 policy and original per-row implementation provenance;
+these revisions must not be presented as one unchanged experiment. No new
+capacity, expiry, retries, fallback, paid use, resource changes or automatic
+renewal. Stop on the first operational failure, including Azure refusals.
+If capacity cannot fund a row's maximum stages, leave that row and later rows
+unrun. Human reviews remain actual human input.
+
+## Explicit 25-document PDF-aligned revision, 29 October 2026
+
+The user confirmed A is standard RAG without dedicated injection defenses,
+B retains the PDF-required instruction separation, and C retains added screening
+and output checks. The standing shared disclosure rule still applies to all modes.
+The current dataset is `backend/benchmark_current25`: exactly 25 source packs,
+all 45 original extracted source texts and all 47 cases preserved with provenance.
+The current privacy suite contains 25 documents and 125 cases (375 A/B/C rows).
+Historical datasets, 141 v3 rows, 92 privacy rows, receipts and stops remain intact.
+
+Current-suite reports live under `results/current25`; they must not inherit old
+scores. Live questions show observed latency, references and statuses, while
+unsupported semantic/security/quality judgments remain N/A. The PDF requires
+predefined repeatable evaluation, not automatic benchmark updates for arbitrary
+live questions. This revision authorizes local implementation and verification,
+not a new live benchmark scope. The prepared main workload is at most 188 calls;
+main plus the new privacy suite could require 688 calls and cannot be assumed to
+fit the existing remaining allowance. No new capacity, expiry, retries or fallback.
+
+## Explicit current25 main benchmark authorization, 29 October 2026
+
+The user approved the prepared 47-case A/B/C main benchmark with “do it” in
+response to the 188-call trial-credit/quota confirmation question. Execute only
+these 141 planned rows, at most 188 calls / 6,016,000 reservation units, consuming
+the existing aggregate Azure trial allocation. Use independent
+`user-approved-current25-main-20261029-v1`; preserve all historical receipts,
+rows, consumed accounting and stop flags. No expiry, new capacity, retries,
+fallback, paid use or cloud resource changes. Stop on the first operational
+failure, including provider refusals. Human judgments remain actual human input.
+This authorization does not include the separate 125-case current privacy suite.
+
+
+## Explicit untouched main benchmark continuation, 30 October 2026
+
+The user approved "Remaining main benchmark only: 122 rows, at most 163 calls".
+Use an independent continuation identity and only the existing Azure trial
+allocation, without adding capacity or expiry. Preserve all 19 previous main
+rows, original receipt, stop flags, accounting and implementation provenance.
+Provider content-filter refusals remain operational errors and may advance only
+to distinct untouched rows. Never retry a prior request or alter Azure filters.
+Stop on any other operational failure. No fallback, paid use or resource changes.
+This does not authorize the separate five-tests-per-document privacy workload.
+Human judgments remain actual human input. Keep the main 25-document study,
+five-tests-per-document study and uploaded documents available in the UI.
+
+
+## Explicit remaining main continuation, 30 October 2026
+
+After the interrupted Oct30 attempt was preserved and stopped with 45 recorded
+rows, the user approved "Complete the remaining 96 rows (128-call cap)".
+Use only those 96 untouched main rows (32 per mode), with an independent scope,
+maximum 128 provider calls / 4096000 reservation units from the existing trial
+allowance. No added capacity, expiry, retries, fallback or resource changes.
+Retain provider-filter refusals as errors and advance only to distinct untouched
+rows; stop on any other operational failure. Preserve all 45 previous rows,
+original stop flags, scope identities and implementation provenance. This does
+not authorize privacy execution or fabricated human reviews.
+
+
+## Saved-benchmark selection, 30 October 2026
+
+The user selected "Use the completed 47-case benchmark; no more live calls".
+For this presentation correction use the saved current 141-row main benchmark;
+do not execute the unrun current privacy suite or send additional provider calls.
+Restore the metric table by default, retain optional graphs, and explain zero
+assessed ASR, pending judgments and C-only false positives without changing grades.
+
+
+## Explicit matched challenge authorization, 30 October 2026
+
+The user approved "Run the 8 new cases, capped at 32 calls" after the separate
+24-row A/B/C workload and first-error stop rule were explained. This supersedes
+the no-more-calls choice only for this new workload. Use an independent scope,
+at most 32 calls / 1024000 reservation units from existing Azure trial capacity.
+No added capacity, expiry, retries, fallback or resource changes. Stop on the
+first operational failure, including provider refusals. Preserve all prior
+records, stop flags and implementation provenance. Keep challenge observations
+separate from the frozen 47-case benchmark. Do not prefill successes, false
+positives or human reviews; cases may yield zero observed failures.
+
+
+## Explicit untouched matched-challenge continuation, 30 October 2026
+
+The user approved "Continue the 23 untouched rows, capped at 31 calls" after
+one correct answer failed citation validation. Preserve that failed A row and
+the stopped 1-call scope; never replay it. Use a new independent scope, cap 31
+calls / 992000 reservation units from existing Azure trial capacity, no added
+capacity or expiry. Align source ID and document ID to remove identifier
+ambiguity; preserve citation validation, facts, model settings and defenses.
+Stop on first operational failure. No retries, fallback or fabricated outcomes.
+
+
+## Explicit all-upload validation, 30 October 2026
+
+The user approved the prepared 23-question / 69-row workload across all 10
+frozen uploaded documents and A/B/C, capped at 92 existing Azure trial calls /
+2944000 reservation units. They explicitly approved sending retrieved passages
+including full payment-card numbers and personal/sensitive information to the
+existing gpt-5-mini deployment. Answers must withhold protected values. No added
+capacity, expiry, retry, fallback or resource changes. Record provider-filter
+refusals as errors and advance only to untouched rows; stop on any other
+operational failure. Freeze document versions, retrieval and implementation;
+preserve all prior results, scopes and accounting. Human quality remains human.
+
+
+## Explicit all-upload untouched continuation, 30 October 2026
+
+User approved only the 59 untouched all-upload A/B/C rows, capped at 79 existing trial calls / 2,528,000 reservation units. The original 10 rows and stopped scope stay preserved. The same explicitly approved sensitive passages may be sent to existing Azure. Use the shared concise-answer revision and citation enum. No new capacity, expiry, retries or fallback. Advance only provider-filter refusals and stop on other operational failures. Human quality stays unrated.
+
+
+## Explicit shared 2000-token cap and final upload continuation, 30 October 2026
+
+User approved raising the shared Azure A/B/C completion cap from 700 to 2000 tokens, superseding the earlier fixed-700 rule. Keep identical settings for all modes and record a new settings identity. Only the 27 untouched all-upload rows may run, capped at 36 existing trial calls / 1,152,000 reservation units. Previously approved sensitive passages remain approved. Preserve both prior stopped runs and all 42 records. No retries, fallback, new capacity, expiry or resource changes. Advance provider-filter refusals; stop on any other operational failure. Human judgments remain unrated.
+
+
+## Explicit final nine upload rows, 30 October 2026
+
+User approved only the final 9 untouched all-upload rows, capped at 12 existing Azure trial calls / 384,000 reservation units. Retain shared 2000-token cap and required-citation schema. Previously approved sensitive passages remain approved. Preserve all 60 prior rows, including the B disclosure and three stopped scopes. No retries, fallback, new capacity, expiry or resources. Advance filter refusals; stop on other operational failures. Human quality remains unrated.

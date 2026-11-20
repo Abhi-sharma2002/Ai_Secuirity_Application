@@ -1,3 +1,5 @@
+> Dataset version note: the current predefined study is **25 documents / 47 cases**. Earlier dataset counts, execution logs and measured rates below describe their historical versions. For current status, use [the current study guide](current25/README.md).
+
 **End-to-end explanation of the current AI Security Document Lab**
 
 Provider update: the user has now selected their existing Azure gpt-5-mini

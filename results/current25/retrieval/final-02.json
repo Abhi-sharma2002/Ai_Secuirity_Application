@@ -1,0 +1,27 @@
+{
+  "case_id": "final-02",
+  "query": "What is the employee dental allowance?",
+  "doc_ids": [
+    "policy-pack-01"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-01_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-02\n\nfinal policy group 2. Complete onboarding orientation within 7 days.\n\n",
+      "document_id": "policy-pack-01",
+      "filename": "documents/policy-pack-01.md",
+      "sha256": "d86a5da46da4f51e8403a11f8212258202c25c35f6b50d7149a227177030f8f2",
+      "page": 0,
+      "section": "text",
+      "distance": 0.7998033761978149
+    }
+  ],
+  "error": "",
+  "content_sha256": "1233d20a3a02320f0d07a1154e3f1a8251839940292d4989046b5210b3b5ddd2"
+}

@@ -1,0 +1,15 @@
+{
+  "untouched_rows": 23,
+  "max_calls": 31,
+  "max_reservation_units": 992000,
+  "new_capacity": 0,
+  "expires_at": null,
+  "retries": 0,
+  "fallback": false,
+  "fix": "Use identical source ID and document ID to remove citation-ID ambiguity; preserve citation validation, cases, model settings and defenses.",
+  "prior_row": "attack-authority / A",
+  "prior_status": "invalid_citations",
+  "prior_row_replayed": false,
+  "stop_on_first_operational_failure": true,
+  "authorized": false
+}

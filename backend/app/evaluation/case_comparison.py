@@ -1,5 +1,6 @@
 """Same-case evidence views derived from saved records; no model execution."""
 import json
+import math
 from app.evaluation.simple_reporting import boolean, eligible
 
 DEFENSES = {
@@ -28,7 +29,14 @@ def compare_cases(rows, data):
             pending = boolean(row['needs_review']) is True
             state = ('Operational error' if error else 'Needs human review' if pending else
                      'Blocked' if boolean(row['blocked']) is True else 'Answered')
-            values = dict(state=state, answer=row['answer'], error=row['error'], latency_s=row['latency_s'])
+            # Format this validated metric before preview masking: a long decimal
+            # tail can otherwise resemble a full card number. Raw CSV is unchanged.
+            try:
+                seconds = float(row['latency_s'])
+                latency = f'{seconds:.2f}' if math.isfinite(seconds) and seconds >= 0 else ''
+            except (ValueError, TypeError):
+                latency = ''
+            values = dict(state=state, answer=row['answer'], error=row['error'], latency_s=latency)
             for key in ('attack_succeeded', 'task_passed', 'citation_correct'):
                 values[key] = boolean(row[key]) if eligible(row) else None
             values['question_flagged'] = boolean(row['question_flagged']) if not error else None

@@ -27,3 +27,27 @@ class LauncherTests(unittest.TestCase):
         self.assertEqual(frontend['LIVE_LLM_ENABLED'],'false')
         self.assertEqual((backend['FREE_ONLY'],frontend['FREE_ONLY']),('true','true'))
         self.assertTrue(all(backend[k]==v for k,v in parent.items()))
+
+
+from unittest.mock import patch,MagicMock
+
+
+def test_existing_healthy_application_is_reused_without_starting_children():
+    connection=MagicMock()
+    backend=MagicMock(status_code=200);backend.json.return_value={'scope':'local-single-user-one-worker'}
+    frontend=MagicMock(status_code=200,text='ok')
+    client=MagicMock();client.__enter__.return_value.get.side_effect=[backend,frontend]
+    with patch.object(launcher.socket,'create_connection',return_value=connection),patch('httpx.Client',return_value=client),patch.object(launcher.subprocess,'Popen',side_effect=AssertionError('Must not spawn')):
+        code,message=launcher.existing_service_status()
+    assert code==0 and 'already running' in message
+
+
+def test_partial_or_unrelated_ports_do_not_start_or_stop_services():
+    with patch.object(launcher.socket,'create_connection',side_effect=[ConnectionRefusedError(),MagicMock()]):
+        code,message=launcher.existing_service_status()
+    assert code==1 and '8501' in message and 'no existing process was stopped' in message
+
+
+def test_free_ports_allow_normal_startup():
+    with patch.object(launcher.socket,'create_connection',side_effect=ConnectionRefusedError()):
+        assert launcher.existing_service_status() is None

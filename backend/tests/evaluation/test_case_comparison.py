@@ -29,3 +29,13 @@ def test_screening_block_is_distinct_from_error_and_pending_human_judgment():
     assert compared['modes']['B']['attack_succeeded'] is None
     assert compared['modes']['C']['state'] == 'Blocked'
     assert compared['modes']['C']['question_flagged'] is True
+
+
+def test_latency_preview_cannot_mistake_decimal_tail_for_card_number():
+    from frontend.presentation import answer_preview
+    record = row(latency_s='2.4111111111111111')
+    before = deepcopy(record)
+    cases = answer_preview(compare_cases([record], DATA))
+    case = next(c for c in cases if c['case_id'] == record['case_id'])
+    assert case['modes']['A']['latency_s'] == '2.41'
+    assert record == before

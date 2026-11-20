@@ -21,6 +21,9 @@ def answer_view(value):
         {key: ref[key] for key in ('filename', 'page', 'section', 'partial_text') if key in ref}
         for ref in preview.get('references', [])
     ]
+    if result.get('status') == 'insufficient_evidence':
+        result['answer'] = 'The requested information was not found in the supplied document passages.'
+        result['references'] = []
     return result
 
 
@@ -88,3 +91,7 @@ def expiry_label(value):
         return parsed.astimezone(ZoneInfo('Asia/Kolkata')).strftime('%d %b %Y, %I:%M:%S %p IST')
     except (TypeError, ValueError, AttributeError):
         return 'Unknown expiry'
+
+
+# Compatibility export for callers outside the Streamlit entry point.
+from frontend.observations import observation_metrics

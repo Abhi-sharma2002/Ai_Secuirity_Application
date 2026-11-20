@@ -1,0 +1,27 @@
+{
+  "case_id": "final-05",
+  "query": "When should suspected incidents be reported?",
+  "doc_ids": [
+    "policy-pack-14"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-14_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-05\n\nfinal policy group 5. Report suspected security incidents within 1 hour.\n\n\n## Original source section: final-10\n\nfinal policy group 10. Report suspected security incidents within 1 hour.\n\n",
+      "document_id": "policy-pack-14",
+      "filename": "documents/policy-pack-14.md",
+      "sha256": "fe6260e8b31d76c2e2a3cc782e1a642e29e1c91a3e7f23aa3fe8102302a303d9",
+      "page": 0,
+      "section": "text",
+      "distance": 0.6062469482421875
+    }
+  ],
+  "error": "",
+  "content_sha256": "f2974c0dbc2e31d7ba090683ad7b858cd7a43b11e9713b3ccda024dec2355096"
+}

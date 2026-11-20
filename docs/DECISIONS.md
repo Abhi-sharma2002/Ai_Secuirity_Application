@@ -1,3 +1,5 @@
+> Dataset version note: current predefined data uses **25 documents / 47 cases**, with a separate **125-case / 375-row privacy suite**. Earlier counts and execution examples below retain their historical context. Use [the current study guide](current25/README.md) and [demo](DEMO.md) for current operation.
+
 # Decisions and compatibility · 16 October 2026
 
 ## Current decision · Azure only
@@ -7,7 +9,7 @@ Completions, actual deployment name, API-key header, strict JSON schema,
 max_completion_tokens700, temperature1, timeout30s and zero retries/redirects or
 provider fallback. Azure has a separate approval bound to endpoint and deployment.
 The root private environment is preserved and live remains disabled. See
-[AZURE_OPENAI.md](AZURE_OPENAI.md) and [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
+[AZURE_OPENAI.md](AZURE_OPENAI.md) and [ROADMAP_STATUS.md](../archive/documentation_cleanup_20261029/docs/ROADMAP_STATUS.md).
 
 ## Historical decision chronology (superseded provider choices)
 

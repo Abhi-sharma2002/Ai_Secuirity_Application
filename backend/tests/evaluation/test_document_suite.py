@@ -125,6 +125,9 @@ def test_executor_uses_shared_defenses_and_four_calls_without_retry(tmp_path, mo
                            'source_ids': [data['cases'][0]['evidence'][1]['id']]}), {}
     monkeypatch.setattr(client, 'reserve', reserve)
     monkeypatch.setattr(client, 'call', call)
+    monkeypatch.setattr(client, 'approval', lambda: object())
+    monkeypatch.setattr(client, 'allowance_capacity', lambda _: {
+        'remaining_calls': 4, 'remaining_reserved_tokens': 128000, 'stopped': False})
     runner.run()
     assert len(calls) == len(reservations) == 4
     assert [stage for _, stage in calls] == ['generation', 'generation', 'screening', 'generation']

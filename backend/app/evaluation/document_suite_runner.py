@@ -1,5 +1,7 @@
 """Execute the privacy suite only with its own approved scope and shared trial ledger."""
 import fcntl
+import hashlib
+import re
 import json
 import os
 from pathlib import Path
@@ -8,6 +10,16 @@ from app.evaluation.document_suite import ROOT, RESULTS, POLICY, ERRORS, digest,
 SCOPE = ROOT / '.private/document_privacy_scope.json'
 JOURNAL = ROOT / '.private/document_privacy_attempts.jsonl'
 STOP = ROOT / '.private/document_privacy.stopped'
+
+
+def select_continuation(name):
+    """Select independent receipt/journal/stop paths; never clear an old stop."""
+    global SCOPE, JOURNAL, STOP
+    if not re.fullmatch(r'continuation-[a-z0-9-]{1,40}', name):
+        raise ValueError('Invalid continuation name')
+    SCOPE = ROOT / ('.private/document_privacy_' + name + '_scope.json')
+    JOURNAL = ROOT / ('.private/document_privacy_' + name + '_attempts.jsonl')
+    STOP = ROOT / ('.private/document_privacy_' + name + '.stopped')
 
 
 def identity(data):
@@ -39,6 +51,12 @@ def check_scope(data):
              and not STOP.exists())
     if not valid:
         raise ValueError('Privacy benchmark scope is absent, invalid, stopped or not enabled')
+    if 'preserved_records' in scope:
+        for name, expected in scope['preserved_records'].items():
+            if Path(name).name != name or not name.endswith('.json'):
+                raise ValueError('Invalid preserved record path')
+            if hashlib.sha256((RESULTS/name).read_bytes()).hexdigest() != expected:
+                raise ValueError('Preserved record changed; continuation not permitted')
     return scope
 
 
@@ -62,7 +80,10 @@ def run():
                 if attempt.get('suite_sha256') != digest(data) or not saved.exists():
                     STOP.touch(exist_ok=True)
                     raise RuntimeError('Incomplete prior attempt preserved; no automatic replay')
+        active_scope = check_scope(data)
         for saved in RESULTS.glob('*.json'):
+            if saved.name in active_scope.get('preserved_records', {}):
+                continue
             if json.loads(saved.read_text()).get('execution_identity') != identity(data):
                 raise ValueError('Execution identity changed; create a separately approved run')
         documents = {d['document_id']: d for d in data['documents']}
@@ -96,6 +117,20 @@ def run():
                 for mode in 'ABC':
                     target = RESULTS/(case['case_id']+'--'+mode+'.json')
                     if target.exists(): continue  # Never retry successful or failed rows.
+                    allowed = active_scope.get('allowed_rows')
+                    if allowed is not None and case['case_id']+'--'+mode not in allowed:
+                        continue
+                    # Do not start a row that cannot fund its maximum stages.
+                    # Capacity exhaustion leaves untouched rows unrun, not errors.
+                    required = 2 if mode == 'C' else 1
+                    used = sum(1 for line in JOURNAL.read_text().splitlines() if line.strip()) if JOURNAL.exists() else 0
+                    capacity = client.allowance_capacity(client.approval())
+                    if (active_scope['max_calls'] - used < required
+                            or capacity['remaining_calls'] < required
+                            or capacity['remaining_reserved_tokens'] < required * 32000
+                            or capacity['stopped']):
+                        STOP.touch(exist_ok=True)
+                        return
                     try:
                         initial = {'hits': case['evidence'], 'snapshot': [], 'omitted_ids': []}
                         result = respond(case['query'], mode, initial=initial, _evaluation_call=invoke)

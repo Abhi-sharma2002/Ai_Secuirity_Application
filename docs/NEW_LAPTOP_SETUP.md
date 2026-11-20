@@ -1,3 +1,5 @@
+> Dataset version note: current predefined data uses **25 documents / 47 cases**, with a separate **125-case / 375-row privacy suite**. Earlier counts and execution examples below retain their historical context. Use [the current study guide](current25/README.md) and [demo](DEMO.md) for current operation.
+
 # Run on another laptop (Ubuntu/Linux)
 
 Use Python 3.12. Complete dependency installation before the presentation; the

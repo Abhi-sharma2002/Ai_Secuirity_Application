@@ -50,3 +50,6 @@ results/.run.lock
 
 # Runtime locks are machine-specific, including archived run folders.
 **/.run.lock
+
+# Streamlit OIDC client/cookie secrets are local only.
+.streamlit/secrets.toml

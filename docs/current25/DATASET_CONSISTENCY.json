@@ -1,0 +1,12 @@
+{
+  "current_documents": 25,
+  "main_cases": 47,
+  "main_planned_rows": 141,
+  "main_recorded_rows": 19,
+  "privacy_documents": 25,
+  "privacy_cases": 125,
+  "privacy_planned_rows": 375,
+  "historical_result_dataset_files_unchanged": 246,
+  "provider_calls": 0,
+  "ui": "Current predefined library is the default; older suites labeled historical; uploads remain separate."
+}

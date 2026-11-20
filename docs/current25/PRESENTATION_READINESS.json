@@ -1,0 +1,11 @@
+{
+  "presentation_url": "http://127.0.0.1:8501/?view=presentation",
+  "source": "Actual saved current25 Azure observations",
+  "saved_benign_comparisons": 6,
+  "document_packs": 25,
+  "test_cases": 47,
+  "targeted_tests_passed": 17,
+  "provider_calls_for_verification": 0,
+  "history_files_verified_unchanged": 246,
+  "reload_fix": "Metrics renderer reloaded on rerun; launcher enables runOnSave; services cold restarted."
+}

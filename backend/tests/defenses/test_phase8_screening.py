@@ -110,7 +110,8 @@ class ScreeningTests(unittest.TestCase):
             self.assertEqual([m['role'] for m in screen['messages']],['system','user'])
             self.assertEqual(json.loads(screen['messages'][1]['content'])['sources'],initial['hits'])
             schema=screen['response_format']['json_schema']
-            self.assertTrue(schema['strict']);self.assertEqual(schema['schema'],assistant.Screening.model_json_schema())
+            from app.defenses.screening import request_schema
+            self.assertTrue(schema['strict']);self.assertEqual(schema['schema'],request_schema(initial['hits']))
             self.assertEqual(set(schema['schema']['required']),{'question_flagged','flagged_source_ids','reason_codes'})
             self.assertFalse(schema['schema']['additionalProperties'])
             self.assertEqual(answer,observed[1]['body'],'C retained-all generation must equal B')
@@ -118,7 +119,7 @@ class ScreeningTests(unittest.TestCase):
             common=lambda p:{k:v for k,v in p.items() if k not in ('messages','response_format')}
             self.assertTrue(all(common(row['body'])==common(observed[0]['body']) for row in observed))
             self.assertTrue(all(all(v==30 for v in row['timeout'].values()) for row in observed))
-            self.assertEqual(answer['max_completion_tokens'],700)
+            self.assertEqual(answer['max_completion_tokens'],2000)
             self.assertNotIn('temperature',answer)
             self.assertNotIn('seed',answer)
             self.assertNotIn('EVALUATOR_ONLY_SENTINEL',json.dumps(observed))

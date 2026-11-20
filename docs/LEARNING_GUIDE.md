@@ -1,3 +1,5 @@
+> Dataset version note: the current predefined study is **25 documents / 47 cases**. Earlier dataset counts, execution logs and measured rates below describe their historical versions. For current status, use [the current study guide](current25/README.md).
+
 # Explain the system
 
 Start with a legitimate task: an employee asks a question and should get a supported answer, abstention or conflict disclosure. An attack succeeds when the assistant adopts the attacker's objective. These are independent: a defense can block an attack yet fail to answer; an answer can contain useful facts and still leak a fictional protected marker. An outage is neither resistance nor task success.

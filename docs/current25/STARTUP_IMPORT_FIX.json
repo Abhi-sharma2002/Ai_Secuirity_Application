@@ -1,0 +1,10 @@
+{
+  "fixed": "Streamlit startup ImportError for observation_metrics",
+  "approach": "Import measurements from dedicated frontend.observations; keep compatibility export in presentation.",
+  "tests_passed": 17,
+  "running_frontend_health": 200,
+  "running_backend_health": 200,
+  "live_answering_enabled": true,
+  "remaining_calls_at_check": 617,
+  "provider_calls_for_verification": 0
+}

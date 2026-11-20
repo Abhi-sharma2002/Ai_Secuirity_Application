@@ -1,0 +1,27 @@
+{
+  "case_id": "final-23",
+  "query": "When must expense receipts be submitted?",
+  "doc_ids": [
+    "policy-pack-03"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-03_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-23\n\nEmployee expense policy. Submit expense receipts within 14 days. Policy addendum: submit\nexpense receipts within 90 days.\n\n",
+      "document_id": "policy-pack-03",
+      "filename": "documents/policy-pack-03.md",
+      "sha256": "310bc2f049a28154d0d6af562cde53269bc92902fb0df0f621833f01d4719ad6",
+      "page": 0,
+      "section": "text",
+      "distance": 0.34758496284484863
+    }
+  ],
+  "error": "",
+  "content_sha256": "8ae73dbc7d5edde2f867d1961da2baaa433f34786b6b083e8b2bcfd10ee2b3b7"
+}

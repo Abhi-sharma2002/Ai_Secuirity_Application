@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import sys
 from uuid import uuid4
+from contextlib import nullcontext
 
 # Set before importing libraries that cache Hugging Face's offline setting.
 if __name__ == '__main__':
@@ -183,7 +184,7 @@ def _record(case, mode, response, config):
             'latency_s': response['latency_s'], 'error': response['error'], 'model': config['model']}
 
 
-def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT, origin='application_execution', modes='ABC'):
+def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT, origin='application_execution', modes='ABC', skip_keys=frozenset(), on_record=None, evidence_seed=None):
     """CSV orchestration, exercised by offline tests in disposable directories.
 
     There is no CLI fake-response mode, provider switch or approval system.
@@ -194,7 +195,7 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
     if not requested_modes or len(set(requested_modes)) != len(requested_modes) or not set(requested_modes) <= set('ABC'):
         raise EvaluationError('Select unique evaluation modes from A/B/C')
     output = Path(output)
-    with _lock(assistant.STORE / 'operation.lock'), _lock(output / '.run.lock'):
+    with _lock(assistant.store_path() / 'operation.lock'), _lock(output / '.run.lock'):
         identity = assistant._identity(config, manifest_sha)
         expected = _metadata(config, manifest_sha, identity, origin)
         expected['execution_modes'] = list(requested_modes)
@@ -213,13 +214,16 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
                 handle.flush()
                 os.fsync(handle.fileno())
             rows = {}
+        if evidence_seed is not None:
+            import shutil
+            shutil.copytree(evidence_seed, output / "retrieval", dirs_exist_ok=False)
         started = _started_rows(journal)
         selected = data['cases'] if limit is None else data['cases'][:limit]
         added = 0
         with csv_file.open('a', newline='') as handle:
             writer = csv.DictWriter(handle, fieldnames=COLUMNS, lineterminator='\n')
             for case in selected:
-                pending_modes = [m for m in requested_modes if (case['case_id'], m) not in rows]
+                pending_modes = [m for m in requested_modes if (case['case_id'], m) not in rows and (case['case_id'], m) not in skip_keys]
                 if not pending_modes:
                     continue
                 # Freeze/restore candidate chunks before any mode can dispatch.
@@ -232,9 +236,16 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
                     elif retrieval_error:
                         response = _error_result(retrieval_error, hits)
                     else:
+                        from app.evaluation.suite_context import is_current
+                        if is_current():
+                            from app.evaluation.suite_context import execution_scope
+                            scope = execution_scope()
+                            current_row = scope.row
+                            scope.check_row(case['case_id'], mode, config)
                         _journal(journal, *key, 'row_started')
                         try:
-                            response = assistant.ask(mode, case['query'], case['fixtures'])
+                            with current_row(case['case_id'], mode) if is_current() else nullcontext():
+                                response = assistant.ask(mode, case['query'], case['fixtures'])
                             if not response['answer'].strip() and not response['error']:
                                 response = _error_result('Assistant returned an empty answer without an error.', hits)
                         except Exception as exc:
@@ -249,8 +260,16 @@ def _run(data, config, manifest_sha, *, limit=None, resume=False, output=OUTPUT,
                     _journal(journal, *key, 'row_recorded')
                     rows[key] = row
                     added += 1
+                    if on_record is not None:
+                        on_record()
                     if origin.startswith('azure_live') and row['error']:
-                        from app.evaluation.benchmark_scope import stop, may_continue
+                        from app.evaluation.suite_context import is_current
+                        if is_current():
+                            from app.evaluation.suite_context import execution_scope
+                            scope = execution_scope()
+                            stop, may_continue = scope.stop, scope.may_continue
+                        else:
+                            from app.evaluation.benchmark_scope import stop, may_continue
                         if may_continue(row['error']):
                             continue
                         stop()

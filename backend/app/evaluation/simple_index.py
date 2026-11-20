@@ -25,7 +25,7 @@ def embedding_identity():
     return digest(index_configuration())
 
 
-def prepare_store(data, config, store, *, progress=None):
+def prepare_store(data, config, store, *, progress=None, dataset=None):
     from huggingface_hub import constants as hub_settings
     if not hub_settings.HF_HUB_OFFLINE or os.getenv('TRANSFORMERS_OFFLINE') != '1':
         raise EvaluationError('Start local index preparation with HF_HUB_OFFLINE=1 and TRANSFORMERS_OFFLINE=1; downloads are disabled.')
@@ -35,12 +35,13 @@ def prepare_store(data, config, store, *, progress=None):
     from app.rag.embeddings import ProjectEmbeddings, validate_vectors
 
     store = Path(store)
-    identity = {'manifest_sha256': hashlib.sha256((ROOT / 'backend/benchmark_v3/manifest.json').read_bytes()).hexdigest(),
+    dataset = ROOT / 'backend/benchmark_v3' if dataset is None else Path(dataset)
+    identity = {'manifest_sha256': hashlib.sha256((dataset / 'manifest.json').read_bytes()).hexdigest(),
                 'config_sha256': digest(config), 'embedding_sha256': embedding_identity(), 'generation': uuid4().hex}
     path = collection_path(store, identity)
     records = []
     for number, fixture in enumerate(data['fixtures'], 1):
-        source = ROOT / 'backend/benchmark_v3' / fixture['path']
+        source = dataset / fixture['path']
         raw = source.read_bytes()
         if hashlib.sha256(raw).hexdigest() != fixture['sha256']:
             raise EvaluationError('Fixture changed during local evaluation ingestion')

@@ -37,12 +37,13 @@ class ScreeningRevisionProposalTests(unittest.TestCase):
         config = SimpleNamespace(provider='azure_openai', model='gpt-5-mini-1',
             base_url='https://synthetic.invalid/openai/v1', api_key='SYNTHETIC-ONLY',
             request_timeout_seconds=30)
+        historical_profile=dict(identity_settings(),max_output_tokens=700)
         with patch('socket.socket.connect', side_effect=AssertionError('Network prohibited')), \
              patch('socket.create_connection', side_effect=AssertionError('Network prohibited')), \
              patch.object(httpx.HTTPTransport, 'handle_request', new=blocked_transport):
-            azure_openai.generate(prompt, Screening.model_json_schema(), config, lambda _: None, lambda _: None)
+            azure_openai.generate(prompt, Screening.model_json_schema(), config, lambda _: None, lambda _: None,settings=historical_profile)
             azure_openai.generate(prompt, Screening.model_json_schema(), config, lambda _: None, lambda _: None,
-                                  screening_reasoning_effort='minimal')
+                                  screening_reasoning_effort='minimal',settings=historical_profile)
         self.assertEqual(len(captured), 2)
         # The active transport now sends minimal effort by default. Reconstruct
         # the historical omitted-parameter baseline without altering its record.
@@ -56,7 +57,7 @@ class ScreeningRevisionProposalTests(unittest.TestCase):
         self.assertEqual(old['response_format']['json_schema']['schema'], Screening.model_json_schema())
         self.assertTrue(old['response_format']['json_schema']['strict'])
         self.assertEqual(json.loads(old['messages'][1]['content'])['sources'], saved['response']['candidate_evidence'])
-        self.assertEqual(identity_settings()['configuration_version'], 'azure-gpt5mini-v4-shared-minimal-reasoning')
+        self.assertEqual(identity_settings()['configuration_version'], 'azure-gpt5mini-v5-shared-minimal-cap2000')
 
     def test_rejects_answer_payload_and_other_setting_changes(self):
         payload = {'response_format': {'json_schema': {'name': 'Screening'}}, 'max_completion_tokens': 700}

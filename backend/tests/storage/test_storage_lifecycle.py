@@ -13,7 +13,7 @@ from unittest.mock import patch
 from app.storage import registry as reg
 from app.ingestion import lifecycle as life, maintenance
 from app.main import app
-from fastapi.testclient import TestClient
+from backend.tests.auth_helpers import authenticated_client as TestClient
 from backend.tests.api import test_runtime_v2 as runtime_tests
 
 

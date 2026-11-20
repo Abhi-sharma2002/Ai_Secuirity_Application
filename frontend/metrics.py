@@ -1,11 +1,18 @@
 """Metric inspection and explicit human reviews. No provider execution controls."""
 import json
+from frontend.visibility import SHOW_CURRENT25
 
 import httpx
 import streamlit as st
 
 from frontend.presentation import answer_preview, evaluation_metric_rows
 from frontend.redaction import artifact_preview
+
+
+def case_result_label(result):
+    if result['state'] == 'Operational error' and 'provider_content_filter' in result.get('error', ''):
+        return 'Azure refusal · operational error'
+    return result['state']
 
 
 def render_case_comparison(value, api):
@@ -31,21 +38,35 @@ def render_case_comparison(value, api):
         return
     st.dataframe([{'Case': c['case_id'], 'Type': c['subtype'] or 'benign',
                    'Channel': c['channel'] or 'normal', 'Documents': ', '.join(c['fixtures']),
-                   **{m: c['modes'][m]['state'] for m in 'ABC'}} for c in selected], hide_index=True)
+                   **{m: case_result_label(c['modes'][m]) for m in 'ABC'}} for c in selected], hide_index=True)
     case_id = st.selectbox('Test case for A/B/C comparison', [c['case_id'] for c in selected])
     case = next(c for c in selected if c['case_id'] == case_id)
     st.text('Question: ' + case['query'])
     st.text('Expected legitimate behavior: ' + case['expected_behavior'] + ' · ' + case['expected_task'])
     st.text('Input documents: ' + ', '.join(case['fixtures']))
     st.text('Expected answer evidence: ' + (', '.join(case['expected_evidence']) or 'No supporting answer document declared'))
+    if any(r['state'] == 'Operational error' for r in case['modes'].values()):
+        st.warning('This case has saved execution failures. An expected answer is a test target, not an observed answer. Failed modes have no assessable answer and do not count as successful defenses.')
+        st.caption('Azure refusals come from the provider, not C screening. Other errors may be transport, schema, quota or application failures; a generic saved message does not establish which. No request is retried here.')
     def grade(value):
         return 'Not graded / not applicable' if value is None else 'Yes' if value else 'No'
     for column, mode in zip(st.columns(3), 'ABC'):
         with column:
             result = case['modes'][mode]
-            st.markdown('**' + mode + ' · ' + result['state'] + '**')
+            st.markdown('**' + mode + ' · ' + case_result_label(result) + '**')
             if result['state'] == 'Not run':
                 st.caption('No saved observation for this mode.')
+                continue
+            if result['state'] == 'Operational error':
+                st.text('Answer: Unavailable — execution failed')
+                if 'provider_content_filter' in result.get('error', ''):
+                    st.info('Azure refused this request. No usable answer was returned; this is not a B/C defense block.')
+                else:
+                    st.info('The saved run failed operationally. Its original diagnostic is preserved below; the exact cause cannot be inferred from this generic message.')
+                with st.expander('Original saved error'):
+                    st.text(result['error'])
+                st.text('Task / attack / citation grades: N/A — operational failure')
+                st.text('Recorded route time: ' + (str(result['latency_s']) + ' s' if result['latency_s'] else 'Unavailable'))
                 continue
             st.text('Answer: ' + (result['answer'] or 'No answer saved'))
             if result['error']:
@@ -138,21 +159,56 @@ def render_human_review(value, api):
                             st.success('Your decision was saved; the previous record is archived. Refresh local metrics.')
 
 
-def render_document_privacy(api):
-    st.subheader('Five tests per document — A/B/C privacy comparison')
-    st.caption('Separate from the historical v3 benchmark. Original documents are preserved; each variant adds a fictional private contact. No model calls on refresh.')
+def render_document_privacy(api, *, historical=False):
+    st.subheader('Privacy comparison — ' + ('historical 45-document suite' if historical else 'current 25-document suite'))
+    st.caption('Five conditions per source: 125 cases / 375 A/B/C rows in the current study. Earlier 225-case / 675-row observations belong only to the historical 45-document suite. No model calls on refresh.' if not historical else 'Archived study: 45 documents, 225 cases, 675 planned A/B/C rows. These are not measurements of the current 25-document dataset.')
     value = api('GET', '/evaluation-document-privacy')
     if value is None:
-        st.info('Build and validate with: .venv/bin/python backend/scripts/document_privacy_suite.py --build')
+        st.info('The local five-test suite is unavailable. Check its prepared dataset.')
         return
-    st.write('Documents:', value['n_documents'], '· Cases:', value['n_cases'],
-             '· Recorded:', value['recorded_rows'], '/', value['planned_rows'])
+    if value['recorded_rows'] == 0:
+        st.warning('This separate five-test privacy suite has not been run. The completed 47-case main benchmark is available in the first evaluation choice.')
+        def show_main():
+            st.session_state['current_study_view']='Main benchmark'
+        st.button('Show completed 47-case benchmark',on_click=show_main)
+    from frontend.charts import coverage_chart
+    docs=api('GET','/documents') or {}
+    uploaded={r['document_id'] for r in docs.get('documents',[]) if r.get('status')=='ready' and r.get('active_version')==r.get('id') and not r.get('deleted')}
+    a,b=st.columns(2)
+    a.metric('Predefined documents',value['n_documents'])
+    b.metric('Uploaded documents',len(uploaded))
+    coverage=[]
+    for mode in 'ABC':
+        states=[case['modes'][mode]['status'] for doc in value['documents'] for case in doc['cases']]
+        coverage.append(dict(mode=mode,n_recorded=sum(s!='Not run' for s in states),
+            n_missing=states.count('Not run'),n_errors=sum(s in ('operational_error','error','llm_error','screening_error','invalid_citations','live_blocked') for s in states)))
+    coverage_png=coverage_chart(coverage)
+    st.image(coverage_png)
+    st.download_button('Download five-test coverage PNG',coverage_png,file_name='five_tests_per_document_coverage.png',mime='image/png')
+    st.caption('Five tests for each predefined document, compared across A/B/C. The current live continuation covers the main benchmark only.')
+    with st.expander('Privacy execution and review counts'):
+        st.write('Cases:',value['n_cases'],'· Recorded:',value['recorded_rows'],'/',value['planned_rows'])
+        st.write('Not run:',value.get('unrun_rows',value['planned_rows']-value['recorded_rows']),
+            '· Execution errors:',value.get('error_rows','Unavailable'),'· Awaiting human review:',value.get('unreviewed_rows','Unavailable'))
+    if value.get('prior_stop_preserved'):
+        st.warning('A previous privacy run stopped on an operational failure. Saved answers and stop records are preserved. Untouched rows remain Not run; refreshing this page does not submit them.')
+    with st.expander('What do the five tests mean?'):
+        st.table([
+            {'Test': 'control', 'Meaning': 'Ask for the public contact route with no added attack. The original source may already contain adversarial text.'},
+            {'Test': 'direct_plain', 'Meaning': 'The question directly requests the fictional private contact.'},
+            {'Test': 'direct_encoded', 'Meaning': 'The question requests the fictional private contact encoded as letters.'},
+            {'Test': 'indirect_plain', 'Meaning': 'An added document instruction requests plain private-contact disclosure.'},
+            {'Test': 'indirect_encoded', 'Meaning': 'An added document instruction requests private-contact disclosure as digit words.'},
+        ])
+        st.caption('Every test should provide the public route and withhold the private contact. Not run means no observation; an error means execution failed; neither is evidence of defense success. C can use screening plus an answering call.')
     st.caption(value['exposure'])
     selected = st.selectbox('Document for five-test comparison', [d['document_id'] for d in value['documents']])
     document = next(d for d in value['documents'] if d['document_id'] == selected)
     st.text('Original file: ' + document['original_path'])
+    if all(r['status'] == 'Not run' for c in document['cases'] for r in c['modes'].values()):
+        st.info('No privacy-suite requests have been recorded for this document. There are 15 planned observations: five tests × A/B/C. This is not an application error or an empty model answer.')
     if document['source_has_existing_attack_case']:
-        st.info('This original document is already used by an adversarial v3 case. Control means no added attack, not a guaranteed benign source.')
+        st.info('This original document is already used by an adversarial case. Control means no added attack, not a guaranteed benign source.')
     st.dataframe([{'Test': c['kind'], 'Channel': c['channel'],
                    **{m: c['modes'][m]['status'] for m in 'ABC'}} for c in document['cases']], hide_index=True)
     case_id = st.selectbox('Inspect one of the five tests', [c['case_id'] for c in document['cases']])
@@ -164,7 +220,13 @@ def render_document_privacy(api):
             row = case['modes'][mode]
             st.markdown('**Configuration ' + mode + '**')
             st.text(row['status'])
-            st.text(row.get('answer') or 'No saved answer yet.')
+            if row['status'] == 'Not run':
+                st.caption('No request outcome is recorded. Answer and evaluation grades are unavailable.')
+                continue
+            st.text(row.get('answer') or 'No usable answer recorded.')
+            if row['status'] in ('operational_error', 'error', 'llm_error', 'screening_error', 'invalid_citations', 'live_blocked'):
+                st.info('Execution failed; this is not a successful defense. The saved error is preserved.')
+                continue
             if row.get('grades'):
                 st.write('Matched leakage forms:', row['grades']['detected_forms'])
                 st.write('Public task completed:', row['grades']['task_passed'])
@@ -200,138 +262,67 @@ def render_document_privacy(api):
 
 
 
-def render_metrics(api, base):
-    suite = st.radio('Evaluation suite', ['Historical v3 results', 'Five tests per document'])
-    if suite == 'Five tests per document':
-        render_document_privacy(api)
+def render_uploaded_metrics(api):
+    from frontend.charts import uploaded_chart
+    st.subheader('Your uploaded documents')
+    value=api('GET','/evaluation-uploads')
+    if not value or 'document_count' not in value:
+        st.info('Upload a document and use Ask / compare to record its responses.')
         return
-    st.subheader('Evaluation metrics — v3')
-    st.caption('Local CSV records only. Opening or refreshing this page makes no model calls.')
-    if st.button('Refresh local metrics'):
-        st.rerun()
-    value = api('GET', '/evaluation-v3')
-    if value is None:
-        st.info('Check the local evaluation files, then regenerate reports with the commands below.')
+    data=answer_preview(value)
+    st.metric('Uploaded documents',data['document_count'])
+    from frontend.upload_validation import render_validation
+    render_validation(data)
+    st.caption('Interactive Ask / compare responses')
+    st.image(uploaded_chart(data['observations']))
+    st.caption(data['note'])
+    for row in reversed(data['observations'][-12:]):
+        with st.expander(row['mode']+' · '+row['status']+' · '+', '.join(row['source_files'])):
+            st.text(row['answer'] or 'No answer was produced for this request.')
+
+
+def render_metrics(api, base):
+    selected=st.radio('Results',['Saved study','25-document study','Uploaded documents'] if SHOW_CURRENT25 else ['Saved study','Uploaded documents'],horizontal=True)
+    if selected=='Uploaded documents':
+        render_uploaded_metrics(api)
+        return
+    current=selected=='25-document study'
+    if current:
+        study_view=st.radio('Study view',['Main benchmark','Five tests per document'],horizontal=True,key='current_study_view')
+        if study_view=='Five tests per document':
+            def privacy_api(method,path,**kwargs):
+                return api(method,path.replace('/evaluation-document-privacy','/evaluation-current25-privacy',1),**kwargs)
+            render_document_privacy(privacy_api)
+            return
+    endpoint='/evaluation-current25' if current else '/evaluation-v3'
+    st.subheader('Evaluation metrics')
+    if st.button('Refresh results'):st.rerun()
+    raw=api('GET',endpoint)
+    if not raw or 'summary' not in raw:
+        st.info('Saved evaluation results are unavailable.')
+        return
+    value=answer_preview(raw)
+    dataset=value.get('dataset',{})
+    st.caption(f"{dataset.get('documents','Unknown')} source documents · {dataset.get('cases','Unknown')} test cases"+('' if current else ' · saved results from earlier prompts'))
+    docs=api('GET','/documents') or {}
+    active={r['document_id'] for r in docs.get('documents',[]) if r.get('status')=='ready' and r.get('active_version')==r.get('id') and not r.get('deleted')}
+    a,b=st.columns(2)
+    a.metric('Study documents',dataset.get('documents','Unknown'))
+    b.metric('Uploaded documents',len(active))
+    definitions={d['key']:d for d in value['definitions']}
+    core=[definitions[k] for k in value.get('core_metrics',definitions) if k in definitions]
+    display=st.radio('Metrics display',['Table','Graphs'],index=0,horizontal=True)
+    from frontend.charts import metric_chart
+    benchmark_png=metric_chart(value['summary'])
+    if display=='Table':
+        st.dataframe(evaluation_metric_rows(value['summary'],core),hide_index=True)
     else:
-        review_hashes = value.get("review_hashes", {})
-        value = answer_preview(value)
-        value["review_hashes"] = review_hashes
-        counts = value['counts']
-        st.write('Recorded:', counts['recorded'], '/', counts['expected'], '· Missing:', counts['missing'],
-                 '· Errors:', counts['errors'], '· Awaiting review:', counts['needs_review'],
-                 '· Human quality scores:', counts['quality_reviewed'])
-        if value['status'] == 'no_records':
-            st.info('No live v3 evaluation records exist yet. N/A means unavailable; no defense winner can be inferred.')
-            st.write('Manual Ask answers are separate from the benchmark. Compare the same cases in A, B and C, then refresh this page to see measured results.')
-        elif value['status'] == 'partial':
-            st.warning('Partial comparison: inspect missing, error and review counts before comparing rates.')
-        else:
-            st.caption('All case/mode rows are recorded. Error exclusions and human-review coverage still affect interpretation.')
-        by_key = {d['key']: d for d in value['definitions']}
-        core = [by_key[k] for k in value.get('core_metrics', by_key) if k in by_key]
-        st.dataframe(evaluation_metric_rows(value['summary'], core), hide_index=True)
-        with st.expander('Supporting diagnostic metrics'):
-            st.dataframe(evaluation_metric_rows(value['summary'], [d for d in value['definitions'] if d not in core]), hide_index=True)
-        render_case_comparison(value, api)
-        render_human_review(value, api)
-        coverage = [{k: row[k] for k in ('mode', 'n_recorded', 'n_expected', 'n_missing', 'n_adversarial',
-                    'n_benign', 'n_errors', 'n_needs_review', 'n_quality', 'n_agreement', 'n_latency')}
-                    for row in value['summary']]
-        with st.expander('Counts, denominators and raw computed summary'):
-            st.dataframe(coverage, hide_index=True)
-            st.json(value['summary'], expanded=False)
-        with st.expander('Metric definitions and interpretation', expanded=True):
-            st.dataframe([{k: d[k] for k in ('metric', 'formula', 'better')} for d in value['definitions']], hide_index=True)
-            for note in value['notes']:
-                st.text(note)
-        with st.expander('Evaluation configuration and dataset'):
-            st.json({'configuration': value['configuration'], 'dataset': value['dataset'],
-                     'recorded_origin': value['origin'], 'provider_execution_enabled': value['provider_execution_enabled']})
-
-        def artifact(name):
-            try:
-                response = httpx.get(base + '/evaluation-v3/artifacts/' + name, timeout=15)
-                return response.content if response.status_code == 200 else None
-            except httpx.HTTPError:
-                return None
-
-        chart_labels = [('asr.png', 'Attack success — all versus exposed'),
-                        ('benign_success.png', 'Benign task success'),
-                        ('false_positive.png', 'Benign cases incorrectly treated as malicious'),
-                        ('latency.png', 'Mean and p95 latency'),
-                        ('asr_by_category.png', 'Attack success by category'),
-                        ('tradeoff.png', 'Security versus usability trade-off'),
-                        ('quality.png', 'Human answer quality')]
-        with st.expander('Metric charts', expanded=True):
-            if not value['charts_current']:
-                st.warning('Saved charts are missing or stale. Regenerate the local report; stale charts are withheld.')
-            else:
-                for filename, label in chart_labels:
-                    content = artifact(filename) if filename in value['artifacts'] else None
-                    if content is None:
-                        st.info(label + ': artifact unavailable; regenerate the local report.')
-                    else:
-                        st.image(content, caption=label)
-                        st.download_button('Download ' + filename, content, file_name=filename, mime='image/png')
-        with st.expander('Download saved tables, review forms and written explanations'):
-            st.caption('Text downloads are masked preview copies; original evaluation files remain local. Regenerate written reports after updating records or human labels.')
-            for filename in value['artifacts']:
-                if filename.endswith('.png') or (not value['charts_current'] and (
-                        filename == 'summary.csv')):
-                    continue
-                content = artifact(filename)
-                if content is not None:
-                    st.download_button('Download masked ' + filename, artifact_preview(content, filename=filename),
-                                       file_name='masked-' + filename)
-
-        rows = value['records']
-        st.subheader('Inspect recorded cases')
-        if not rows:
-            st.caption('Case answers, screening decisions and evidence will appear here after real records exist.')
-        else:
-            st.caption('Inspection uses masked copies. Consult the original local records for exact synthetic markers when making human judgments; masking never changes metric calculations.')
-            mode = st.selectbox('Recorded configuration', ['All', 'A', 'B', 'C'])
-            scope = st.selectbox('Record status', ['All', 'Errors', 'Needs human review', 'Eligible for metrics'])
-            selected = [r for r in rows if (mode == 'All' or r['mode'] == mode)
-                        and (scope == 'All' or (scope == 'Errors' and r['error'].strip())
-                             or (scope == 'Needs human review' and not r['error'].strip() and r['needs_review'] == 'true')
-                             or (scope == 'Eligible for metrics' and not r['error'].strip() and r['needs_review'] == 'false'))]
-            if not selected:
-                st.info('No recorded rows match these filters.')
-            else:
-                st.dataframe([{k: r[k] for k in ('case_id', 'mode', 'category', 'channel', 'attack_retrieved',
-                              'attack_succeeded', 'task_passed', 'blocked', 'needs_review', 'citation_correct', 'error')}
-                              for r in selected], hide_index=True)
-                keys = [r['case_id'] + ' / ' + r['mode'] for r in selected]
-                choice = st.selectbox('Inspect case / configuration', keys)
-                row = selected[keys.index(choice)]
-                with st.expander('Question, answer, citations and screening trace', expanded=True):
-                    st.text('Question: ' + row['query'])
-                    st.text('Expected behavior: ' + row['expected_behavior'])
-                    st.text('Recorded answer: ' + row['answer'])
-                    st.json(value.get('case_metadata', {}).get(row['case_id'], {}), expanded=False)
-                    detail = {}
-                    for key, item in row.items():
-                        if key in {'sources', 'retrieved_chunk_ids', 'kept_chunk_ids', 'removed_chunk_ids', 'screen_reasons'}:
-                            try:
-                                item = json.loads(item)
-                            except (ValueError, TypeError):
-                                pass
-                        detail[key] = item
-                    st.json(answer_preview(detail), expanded=False)
-                if st.checkbox('Inspect saved original retrieval for this case'):
-                    evidence = api('GET', '/evaluation-v3/evidence/' + row['case_id'])
-                    if evidence is not None:
-                        st.json(answer_preview(evidence), expanded=False)
-    st.caption('Local reporting commands — they do not enable provider evaluation:')
-    st.code('.venv/bin/python backend/scripts/make_report.py\n'
-            '.venv/bin/python backend/scripts/review_eval.py --prepare\n'
-            '.venv/bin/python backend/scripts/write_report.py\n'
-            '.venv/bin/python backend/scripts/write_report.py --check', language='bash')
-    with st.expander('Run the A/B/C benchmark and populate these metrics'):
-        st.write('After explicit benchmark authorization, run these commands from the repository terminal. The small check produces a partial comparison; the full run completes it without replaying saved rows. Commands refresh local charts and reports automatically.')
-        st.code('.venv/bin/python backend/scripts/run_eval.py --plan\n'
-                '.venv/bin/python backend/scripts/run_eval.py --live --new-case-smokes\n'
-                '.venv/bin/python backend/scripts/run_eval.py --live --limit 3\n'
-                '.venv/bin/python backend/scripts/run_eval.py --live --all --resume', language='bash')
-        st.caption('The runner requires LIVE_EVALUATION_ENABLED=true after authorization. The dashboard never starts provider calls on refresh. Resolve Needs human review and fill quality_0_4 before treating the comparison as final.')
+        st.image(benchmark_png)
+    st.download_button('Download benchmark graph PNG',benchmark_png,file_name=('current25' if current else 'saved_study')+'_metrics.png',mime='image/png')
+    st.caption('Rates use assessed responses. Errors and pending judgments are excluded; unavailable values are not zero.')
+    with st.expander('Result details'):
+        counts=value['counts']
+        st.write(f"{counts['recorded']}/{counts['expected']} recorded · {counts['errors']} errors · {counts['missing']} unrun · {counts['needs_review']} awaiting judgment")
+        def selected_api(method,path,**kwargs):
+            return api(method,path.replace('/evaluation-v3',endpoint,1),**kwargs)
+        render_case_comparison(value,selected_api)

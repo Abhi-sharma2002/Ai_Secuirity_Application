@@ -1,0 +1,4 @@
+mode,recorded,errors,attack_successes,assessed_attacks,asr,false_positives,assessed_benign_controls,false_positive_rate
+A,8,1,0,3,0.0,0,0,
+B,8,0,0,4,0.0,0,0,
+C,8,0,0,4,0.0,0,4,0.0

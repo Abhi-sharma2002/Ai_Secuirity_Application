@@ -55,7 +55,8 @@ async def lifespan(app):
 
 
 configure_logging()
-app = FastAPI(title='AI Security Document Assistant', lifespan=lifespan)
+app = FastAPI(title='AI Security Document Assistant', lifespan=lifespan,
+              docs_url=None, redoc_url=None, openapi_url=None)
 app.add_middleware(UploadRequestLimit)
 app.include_router(router)
 

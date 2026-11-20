@@ -166,6 +166,6 @@ provider, invent credentials, or enable LangSmith tracing. Externally enabling
 tracing may transmit document contents to the configured tracing service.
 
 The shared provider-neutral LLM client is now implemented in Phase 4, separately
-from this retrieval pipeline. See [Phase 4](phase4-llm-client.md) for the fake
+from this retrieval pipeline. See [Phase 4](../archive/documentation_cleanup_20261029/docs/phase4-llm-client.md) for the fake
 adapter, capabilities, retries, and usage accounting. Live transport and A/B/C
 execution remain unimplemented.

@@ -1,0 +1,293 @@
+{
+  "provider_calls": 0,
+  "documents": 25,
+  "cases": 47,
+  "all_supporting_quotes_retrieved": true,
+  "source_selection_verified": true,
+  "historical_files_unchanged": 246,
+  "retrieval_observations": [
+    {
+      "case_id": "development-01",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-02",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-03",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-04",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-05",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-06",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "development-07",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "development-08",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "development-09",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "development-10",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "development-11",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "development-12",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-01",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-02",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-03",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-04",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-05",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-06",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-07",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-08",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-09",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-10",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-11",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-12",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-13",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-14",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-15",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": false
+    },
+    {
+      "case_id": "final-16",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-17",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-18",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-19",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-20",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-21",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-22",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-23",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-24",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-25",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-26",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-27",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-28",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-29",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "final-30",
+      "retrieved_chunks": 3,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "v3-direct-01",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "v3-direct-02",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "v3-misinfo-01",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "v3-misinfo-02",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    },
+    {
+      "case_id": "v3-misinfo-03",
+      "retrieved_chunks": 1,
+      "supporting_quotes_present": true,
+      "attack_exposed": true
+    }
+  ],
+  "note": "Local retrieval verification only; not model efficacy results."
+}

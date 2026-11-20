@@ -1,0 +1,325 @@
+"""Actual metrics UI with labeled synthetic replies; sockets are forbidden."""
+from copy import deepcopy
+from io import BytesIO
+from pathlib import Path
+from unittest.mock import patch
+
+import httpx
+from PIL import Image
+from streamlit.testing.v1 import AppTest
+
+from app.evaluation import simple_dashboard as dashboard, simple_reporting as report
+from app.evaluation.simple_config import load_config
+from backend.tests.evaluation.test_simple_reporting import DATA, BENIGN, ATTACKS, row
+from frontend.presentation import evaluation_metric_rows
+
+
+def payload(rows=()):
+    return {'status': 'partial' if rows else 'no_records', 'counts': {
+        'recorded': len(rows), 'expected': len(DATA['cases']) * 3,
+        'missing': len(DATA['cases']) * 3 - len(rows), 'errors': 0,
+        'needs_review': 0, 'quality_reviewed': 0},
+        'summary': report.summarize(rows, DATA), 'configuration': load_config(),
+        'dataset': {'cases': len(DATA['cases']), 'documents': len(DATA['fixtures'])},
+        'origin': 'synthetic UI test only', 'records': list(rows), 'notes': ['Errors are excluded from rates.'],
+        'definitions': [dict(zip(('key', 'metric', 'formula', 'better', 'kind'), d)) for d in dashboard.DEFINITIONS],
+        'charts_current': False, 'artifacts': [], 'provider_execution_enabled': False}
+
+
+def application(data, calls):
+    def request(method, url, **kwargs):
+        calls.append((method, url))
+        value = data if url.endswith(('/evaluation-v3', '/evaluation-current25')) else (
+            {'live': {'enabled': False, 'reason': 'Synthetic offline test'}, 'limits': {}}
+            if url.endswith('/ready') else {'documents': []})
+        return httpx.Response(200, json=value, request=httpx.Request(method, url))
+    return request
+
+
+def metrics_page():
+    script = Path(__file__).resolve().parents[3] / 'frontend/streamlit_app.py'
+    app = AppTest.from_file(str(script),default_timeout=20).run(timeout=15)
+    app.sidebar.radio[0].set_value('Metrics / evaluation').run()
+    assert not app.exception
+    return app
+
+
+def test_every_metric_has_na_or_explicit_denominators():
+    data = payload()
+    rows = evaluation_metric_rows(data['summary'], data['definitions'])
+    assert len(rows) == len(dashboard.DEFINITIONS)
+    assert all(r['A'].startswith('N/A') for r in rows)
+    data = payload([row(ATTACKS[0], attack_succeeded='true'), row(BENIGN[0], 'C')])
+    rows = evaluation_metric_rows(data['summary'], data['definitions'])
+    by_name = {r['Metric']: r for r in rows}
+    assert by_name['Attack success — all']['A'] == '100.0% (1/1)'
+    assert by_name['Attack success — all']['B'] == 'N/A'
+    assert by_name['False positive rate']['A'] == 'N/A (C only)'
+
+
+def test_empty_metrics_page_explains_na_all_metrics_and_exclusions():
+    calls = []
+    with patch('httpx.request', side_effect=application(payload(), calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert any('Missing attack or human-quality' in item.value for item in app.caption)
+        frame = app.dataframe[0].value
+        assert set(frame.columns) == {'Metric', 'A', 'B', 'C'}
+        assert len(frame) == len(dashboard.DEFINITIONS)
+        assert any('Errors are excluded' in item.value for item in app.text)
+        assert all(method == 'GET' for method, _ in calls)
+        assert not any(url.endswith('/evaluation-v3') for _, url in calls[:2])
+
+
+def test_all_metric_artifact_names_are_requested_only_on_metrics_page():
+    data, calls, downloads = payload(), [], []
+    data.update(charts_current=True, artifacts=list(dashboard.CHARTS))
+    output = BytesIO()
+    Image.new('RGB', (4, 4)).save(output, format='PNG')
+    def get(url, **kwargs):
+        downloads.append(url.rsplit('/', 1)[-1])
+        return httpx.Response(200, content=output.getvalue())
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('httpx.get', side_effect=get), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        # The default current view and explicit historical selection each load
+        # their own charts. Neither view may request an unrelated artifact.
+        assert downloads == [name for name in dashboard.CHARTS if name not in {'asr.png', 'asr_by_category.png'}]
+        assert len(app.get('download_button')) == 5
+        assert not app.code
+        assert all(method == 'GET' for method, _ in calls)
+
+
+def test_case_inspector_filters_errors_and_preserves_input():
+    rows = [row(), row(ATTACKS[0], 'C', error='Synthetic provider timeout')]
+    data, calls = payload(rows), []
+    before = deepcopy(data)
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        next(s for s in app.selectbox if s.label == 'Record status').set_value('Errors').run()
+        selector = next(s for s in app.selectbox if s.label == 'Inspect case / configuration')
+        assert selector.options == [rows[1]['case_id'] + ' / C']
+        assert data == before
+        assert all(method == 'GET' for method, _ in calls)
+
+
+def test_same_case_comparison_shows_defenses_docs_and_missing_without_provider_calls():
+    from app.evaluation.case_comparison import compare_cases, DEFENSES
+    case = BENIGN[0]
+    rows = [row(case, 'A', answer='Observed answer A'),
+            row(case, 'C', answer='', error='Synthetic schema failure')]
+    data, calls = payload(rows), []
+    data.update(case_comparisons=compare_cases(rows, DATA), defense_mechanisms=DEFENSES)
+    before = deepcopy(data)
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert any('Grounded baseline' in item.value for item in app.markdown)
+        assert any('Instruction separation' in item.value for item in app.markdown)
+        assert any('Screening and output checks' in item.value for item in app.markdown)
+        assert any('Input documents:' in item.value for item in app.text)
+        assert any('B · Not run' in item.value for item in app.markdown)
+        assert any('C · Operational error' in item.value for item in app.markdown)
+        assert any('Observed answer A' in item.value for item in app.text)
+        selector = next(s for s in app.selectbox if s.label == 'Test case for A/B/C comparison')
+        assert len(selector.options) == 47
+        assert data == before
+        assert all(method == 'GET' for method, _ in calls)
+
+
+def test_human_quality_form_requires_explicit_submit_and_preserves_answer_binding():
+    target = row()
+    data, calls, submitted = payload([target]), [], []
+    digest = report.row_digest(target)
+    data['review_hashes'] = {target['case_id'] + '/A': digest}
+    data['case_metadata'] = {target['case_id']: {'adversarial': False, 'supporting_quotes': ['Synthetic evidence']}}
+    read = application(data, calls)
+    def request(method, url, **kwargs):
+        if method == 'POST':
+            submitted.append((url, kwargs['json']))
+            return httpx.Response(200, json={'saved': True}, request=httpx.Request(method, url))
+        return read(method, url, **kwargs)
+    with patch('httpx.request', side_effect=request), patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert not submitted
+        next(b for b in app.button if b.label == 'Save my quality review').click().run()
+        assert not submitted
+        next(t for t in app.text_input if t.label == 'Your name (human reviewer)').input('SYNTHETIC HUMAN TEST INPUT')
+        next(s for s in app.selectbox if s.label == 'Answer quality').set_value(3)
+        next(s for s in app.selectbox if s.label.startswith('Do you agree with the automatic task grade')).set_value('Yes')
+        next(b for b in app.button if b.label == 'Save my quality review').click().run()
+        assert not app.exception
+        assert len(submitted) == 1
+        url, body = submitted[0]
+        assert url.endswith('/evaluation-current25/quality-review')
+        assert body['record_sha256'] == digest
+        assert body['quality_0_4'] == 3 and body['task_correct'] is True
+        assert body['attack_correct'] is None
+
+
+def test_provider_refusals_are_explained_without_changing_saved_results():
+    from app.evaluation.case_comparison import compare_cases, DEFENSES
+    case = BENIGN[0]
+    rows = [row(case, 'A', answer='', error='Benchmark provider call failed; scope stopped'),
+            row(case, 'B', answer='', error='provider_content_filter: Azure refused'),
+            row(case, 'C', answer='', error='provider_content_filter: Azure refused')]
+    data, calls = payload(rows), []
+    data.update(case_comparisons=compare_cases(rows, DATA), defense_mechanisms=DEFENSES)
+    before = deepcopy(data)
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = metrics_page()
+        assert any('Azure refusal' in item.value for item in app.markdown)
+        assert any('not a B/C defense block' in item.value for item in app.info)
+        assert any('N/A — operational failure' in item.value for item in app.text)
+        assert not any('historical benchmark observations' in item.value for item in app.info)
+        assert data == before
+        assert all(method == 'GET' for method, _ in calls)
+
+
+def test_current_study_is_default_and_keeps_current_metrics_separate():
+    data, calls = payload(), []
+    data['dataset'] = {'version':'fictional-current25-v1','documents':25,'cases':47}
+    data.update(charts_current=False, artifacts=[])
+    with patch('httpx.request', side_effect=application(data, calls)), \
+         patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
+        app = AppTest.from_file(str(Path('frontend/streamlit_app.py').resolve())).run(timeout=15)
+        app.sidebar.radio[0].set_value('Metrics / evaluation').run()
+        assert not app.exception
+        assert next(r for r in app.radio if r.label=='Evaluation suite').value == 'Current 25-document study'
+        assert any(url.endswith('/evaluation-current25') for _,url in calls)
+        evaluation_calls = [url for _,url in calls if url.endswith(('/evaluation-current25', '/evaluation-v3'))]
+        assert evaluation_calls[0].endswith('/evaluation-current25')
+        assert not any(item.label.startswith('Historical ASR') for item in app.metric)
+        assert any('Missing attack or human-quality' in item.value for item in app.caption)
+        assert any('25-document' in item.value for item in app.subheader)
+
+
+def test_graphical_dashboard_keeps_only_document_headline_counts():
+    calls=[]
+    with patch('httpx.request',side_effect=application(payload(),calls)), patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
+        app=metrics_page()
+        assert {m.label for m in app.metric} == {'Predefined documents','Uploaded documents'}
+        assert not any(m.label.startswith('ASR') for m in app.metric)
+        choices=next(r for r in app.radio if r.label=='Evaluation suite').options
+        assert choices==['Current 25-document study','Current privacy — 25 documents','Your uploaded documents','Historical v3 results — 45 documents (older prompts)']
+        assert not any('Remaining:' in c.value for c in app.caption)
+        assert not any(url.endswith('/evaluation-v3') for _,url in calls)
+
+
+def test_uploaded_view_is_read_only_and_separate():
+    calls=[]
+    base=application(payload(),calls)
+    def request(method,url,**kwargs):
+        if url.endswith('/evaluation-uploads'):
+            calls.append((method,url))
+            return httpx.Response(200,json={'document_count':2,'observations':[], 'note':'Observed statuses only'},request=httpx.Request(method,url))
+        return base(method,url,**kwargs)
+    with patch('httpx.request',side_effect=request), patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
+        app=metrics_page()
+        next(r for r in app.radio if r.label=='Evaluation suite').set_value('Your uploaded documents').run()
+        assert not app.exception
+        assert app.metric[0].label=='Uploaded documents' and app.metric[0].value=='2'
+        assert all(method=='GET' for method,_ in calls)
+
+
+def test_table_is_default_and_explains_provisional_asr_and_false_positives():
+    calls=[]
+    with patch('httpx.request',side_effect=application(payload(),calls)), patch('socket.socket.connect',side_effect=AssertionError('Network forbidden')):
+        app=metrics_page()
+        selector=next(r for r in app.radio if r.label=='Metrics display')
+        assert selector.value=='Table'
+        assert any('ASR is provisional' in item.value for item in app.info)
+        assert any('incorrectly flagged, filtered or blocked' in item.value for item in app.markdown)
+        assert {'Metric','A','B','C'} == set(app.dataframe[0].value.columns)
+        selector.set_value('Graphs').run(timeout=20)
+        assert not app.exception
+        assert next(r for r in app.radio if r.label=='Metrics display').value=='Graphs'
+        assert all(method=='GET' for method,_ in calls)
+
+
+def test_unrun_privacy_view_links_back_to_recorded_main_benchmark():
+    from app.evaluation.document_suite import snapshot as privacy_snapshot
+    from app.evaluation.suite_context import current_suite
+    with current_suite():privacy=privacy_snapshot()
+    calls=[]
+    base=application(payload(),calls)
+    def request(method,url,**kwargs):
+        if url.endswith('/evaluation-current25-privacy'):
+            calls.append((method,url))
+            return httpx.Response(200,json=privacy,request=httpx.Request(method,url))
+        return base(method,url,**kwargs)
+    with patch('httpx.request',side_effect=request),patch('socket.socket.connect',side_effect=AssertionError('No network')):
+        app=metrics_page()
+        next(r for r in app.radio if r.label=='Evaluation suite').set_value('Current privacy — 25 documents').run(timeout=20)
+        assert not app.exception
+        assert any('has not been run' in item.value for item in app.warning)
+        next(b for b in app.button if b.label=='Show completed 47-case benchmark').click().run(timeout=20)
+        assert not app.exception
+        assert next(r for r in app.radio if r.label=='Evaluation suite').value=='Current 25-document study'
+        assert all(method=='GET' for method,_ in calls)
+
+
+def test_extra_challenge_cases_are_read_only_inputs_without_prefilled_failures(tmp_path,monkeypatch):
+    monkeypatch.setattr("app.evaluation.challenges.RESULTS",tmp_path)
+    from app.evaluation.challenges import snapshot
+    data=snapshot();calls=[]
+    base=application(payload(),calls)
+    def request(method,url,**kwargs):
+        if url.endswith('/evaluation-challenges'):
+            calls.append((method,url))
+            return httpx.Response(200,json=data,request=httpx.Request(method,url))
+        return base(method,url,**kwargs)
+    with patch('httpx.request',side_effect=request),patch('socket.socket.connect',side_effect=AssertionError('No network')):
+        app=metrics_page()
+        selector=next(s for s in app.selectbox if s.label=='Challenge case')
+        assert len(selector.options)==8
+        assert any('not evidence of a successful attack or a false positive' in item.value for item in app.warning)
+        selector.set_value('benign-transcript').run(timeout=20)
+        assert not app.exception
+        assert any('09:00' in item.value for item in app.text)
+        assert all(method=='GET' for method,_ in calls)
+
+
+def test_historical_failure_examples_are_labelled_and_never_mixed_with_current_metrics():
+    from app.evaluation.challenges import snapshot
+    from app.evaluation.simple_dashboard import snapshot as historical_main
+    from app.evaluation.document_suite import snapshot as historical_privacy
+    # Saved historical observations are read only; no judgments are created.
+    h,p,ch=historical_main(),historical_privacy(),snapshot()
+    calls=[];base=application(payload(),calls)
+    def request(method,url,**kwargs):
+        if url.endswith('/evaluation-challenges'):data=ch
+        elif url.endswith('/evaluation-v3'):data=h
+        elif url.endswith('/evaluation-document-privacy'):data=p
+        else:return base(method,url,**kwargs)
+        calls.append((method,url));return httpx.Response(200,json=data,request=httpx.Request(method,url))
+    with patch('httpx.request',side_effect=request),patch('socket.socket.connect',side_effect=AssertionError('No network')):
+        app=metrics_page()
+        next(c for c in app.checkbox if c.label=='Show real historical attack successes and potential false positives').check().run(timeout=20)
+        assert not app.exception
+        assert sum(e.label.startswith('Recorded attack success') for e in app.expander)==2
+        assert sum(e.label.startswith('Potential false positive') for e in app.expander)==4
+        assert any('not counted as a graded false positive' in c.value for c in app.caption)
+        assert all(method=='GET' for method,_ in calls)
+
+
+def test_earlier_measured_results_are_reachable_with_actual_nonzero_asr():
+    from app.evaluation.simple_dashboard import snapshot
+    historical=snapshot();calls=[];base=application(payload(),calls)
+    def request(method,url,**kwargs):
+        if url.endswith('/evaluation-v3'):
+            calls.append((method,url));return httpx.Response(200,json=historical,request=httpx.Request(method,url))
+        return base(method,url,**kwargs)
+    with patch('httpx.request',side_effect=request),patch('socket.socket.connect',side_effect=AssertionError('No network')):
+        app=metrics_page()
+        next(b for b in app.button if b.label=='Show earlier measured benchmark').click().run(timeout=20)
+        assert not app.exception
+        assert next(r for r in app.radio if r.label=='Evaluation suite').value=='Historical v3 results'
+        frame=app.dataframe[0].value
+        attack=frame[frame['Metric']=='Attack success — all'].iloc[0]
+        assert attack['A']=='11.1% (2/18)' and attack['B']=='0.0% (0/19)' and attack['C']=='0.0% (0/20)'
+        assert any('earlier prompts' in w.value for w in app.warning)
+        assert all(method=='GET' for method,_ in calls)

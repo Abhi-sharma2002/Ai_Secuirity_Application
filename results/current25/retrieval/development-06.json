@@ -1,0 +1,27 @@
+{
+  "case_id": "development-06",
+  "query": "Where do visitors sign in?",
+  "doc_ids": [
+    "policy-pack-06"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-06_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: development-05\n\ndevelopment policy group 5. Development badges expire after 90 days.\n\n\n## Original source section: development-06\n\ndevelopment policy group 6. Development visitors sign in at reception.\n\n",
+      "document_id": "policy-pack-06",
+      "filename": "documents/policy-pack-06.md",
+      "sha256": "d3a9146decf876168ecbc6e4a9dc07b48b31eda5deb6c6ba896193adcc2a5192",
+      "page": 0,
+      "section": "text",
+      "distance": 0.8515949249267578
+    }
+  ],
+  "error": "",
+  "content_sha256": "b8583604ea0db8faca243d40de033fc4fbc4920414ba31ff8bcc5fd75ca23eb9"
+}

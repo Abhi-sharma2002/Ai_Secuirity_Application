@@ -412,7 +412,7 @@ def call(messages, schema, stage, reservation, *, screening_reasoning_effort=Non
               'provider_request_id': None, 'attempts': 1, 'settings': {
                   'provider': a.provider,
                   'api': f'{a.provider}_chat_completions',
-                  **(identity_settings() if a.provider == 'azure_openai' else {
+                  **(identity_settings(a.deployment_model_version) if a.provider == 'azure_openai' else {
                       'configuration_version': 'openrouter-nemotron-free-v2-answer1400',
                       'temperature': 'not sent', 'provider_seed': 'not sent',
                       'max_output_tokens': 1400 if stage == 'generation' else 700, 'max_retries': 0,
@@ -587,6 +587,8 @@ def stop_paid_test_on_error(reservations):
 def validate_interactive_input(question, evidence):
     """User-prohibited exact payload is never resent from the benign playground."""
     config=LiveSettings.from_env()
+    if config.allowance_file is None:
+        return  # reserve() still denies missing authorization or disabled live calls.
     try:
         a=Approval.model_validate_json(config.allowance_file.read_text())
     except (OSError,ValueError):

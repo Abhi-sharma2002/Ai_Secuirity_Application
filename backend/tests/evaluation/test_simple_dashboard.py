@@ -4,7 +4,7 @@ import json
 from unittest.mock import patch
 
 from fastapi import FastAPI, HTTPException
-from fastapi.testclient import TestClient
+from backend.tests.auth_helpers import authenticated_client as TestClient
 import pytest
 
 from app.api import runtime
@@ -174,3 +174,18 @@ def test_http_human_review_updates_quality_and_corrects_grades_offline(store, mo
         assert current['summary'][0]['mean_quality'] is None
         assert client.post('/evaluation-v3/quality-review', json={**identity, 'reviewer': 'Synthetic test',
             'quality_0_4': 3, 'task_correct': True}).status_code == 409
+
+
+def test_saved_cap_revision_is_read_only_and_other_mismatches_still_fail(store):
+    from app.evaluation.simple_config import load_config
+    from app.evaluation.simple_runner import dataset_path
+    active=load_config()
+    previous=dict(active,max_tokens=700)
+    metadata={'origin':'application_execution','config':previous,
+              'manifest_sha256':hashlib.sha256((dataset_path()/'manifest.json').read_bytes()).hexdigest()}
+    path=store/'run_metadata.json';path.write_text(json.dumps(metadata));before=path.read_bytes()
+    view=dashboard.snapshot()
+    assert view['configuration']==previous and view['active_configuration']==active
+    assert path.read_bytes()==before
+    metadata['config']=dict(previous,top_k=previous['top_k']+1);path.write_text(json.dumps(metadata))
+    with pytest.raises(EvaluationError):dashboard.snapshot()

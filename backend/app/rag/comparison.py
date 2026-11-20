@@ -8,7 +8,7 @@ from app.llm import client as live
 COMPLETED = {'answered', 'conflict', 'insufficient_evidence', 'policy_blocked'}
 
 
-def compare(question, request_id, *, external_processing_confirmed=False, snapshot_items=None):
+def compare(question, request_id, *, external_processing_confirmed=False, snapshot_items=None, initial=None, authenticated_subject=None):
     started = perf_counter()
     result = {'status': 'not_started', 'question': question, 'results': {},
               'initial_evidence': None, 'prompt_hash': PROMPT_HASH,
@@ -22,7 +22,8 @@ def compare(question, request_id, *, external_processing_confirmed=False, snapsh
         from app.evaluation.comparison_provenance import capture
         result['review_provenance'] = capture(PROMPT_HASH)
         result['source_request_id'] = request_id
-        initial = search(question) if snapshot_items is None else search(question, snapshot_items)
+        if initial is None:
+            initial = search(question) if snapshot_items is None else search(question, snapshot_items)
         live.validate_interactive_input(question, initial['hits'])
         result['initial_evidence'] = initial
         if not initial['hits']:
@@ -33,6 +34,7 @@ def compare(question, request_id, *, external_processing_confirmed=False, snapsh
         for mode in 'ABC':
             response = respond(question, mode, initial=deepcopy(initial),
                                run_context={'client_request_id':request_id, 'comparison_mode':mode,
+                                            'authenticated_subject': authenticated_subject,
                                             'external_processing_confirmed': external_processing_confirmed})
             result['results'][mode] = response
             if response['status'] not in COMPLETED:

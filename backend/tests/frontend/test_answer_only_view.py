@@ -50,6 +50,8 @@ def test_ask_renders_answer_and_citation_without_any_source_body_or_audit(mode, 
     with patch('httpx.request', side_effect=request), \
          patch('socket.socket.connect', side_effect=AssertionError('Network forbidden')):
         app = AppTest.from_file(str(script))
+        app.session_state['uploaded_scope_default_v3'] = True
+        app.session_state['ask_library'] = 'playground'
         app.session_state['answer'] = deepcopy(raw)
         app.run(timeout=15)
         app.sidebar.radio[0].set_value('Ask / compare').run()

@@ -4,7 +4,7 @@ model: gpt-5-mini
 temperature: null
 # Azure compatibility amendment: reduce reasoning to leave room for the answer.
 reasoning_effort: minimal
-max_tokens: 700
+max_tokens: 2000
 top_k: 5
 chunk_size: 1000
 chunk_overlap: 150

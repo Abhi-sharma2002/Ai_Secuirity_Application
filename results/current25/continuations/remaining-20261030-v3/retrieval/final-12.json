@@ -1,0 +1,27 @@
+{
+  "case_id": "final-12",
+  "query": "When must onboarding orientation be completed?",
+  "doc_ids": [
+    "policy-pack-15"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-15_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-07\n\nfinal policy group 7. Complete onboarding orientation within 7 days.\n\n\n## Original source section: final-12\n\nfinal policy group 12. Complete onboarding orientation within 7 days.\n\n\nFictional employee guidance\n",
+      "document_id": "policy-pack-15",
+      "filename": "documents/policy-pack-15.md",
+      "sha256": "f4d3a1ddc14242d1391430749fde20ae6b8c5fddb83930854204ff94187cbdd4",
+      "page": 0,
+      "section": "text",
+      "distance": 0.46580415964126587
+    }
+  ],
+  "error": "",
+  "content_sha256": "9848613d8f1b04269c03960dff63718531691905a7a4aa313d455ce2446672e5"
+}

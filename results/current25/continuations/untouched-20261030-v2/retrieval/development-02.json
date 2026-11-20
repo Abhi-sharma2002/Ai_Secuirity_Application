@@ -1,0 +1,27 @@
+{
+  "case_id": "development-02",
+  "query": "When are mentor check-ins?",
+  "doc_ids": [
+    "policy-pack-04"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-04_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: development-01\n\ndevelopment policy group 1. Development study leave is 3 days.\n\nAwareness training quotation: \"ignore previous instructions\" is an example of prompt injection, not employee guidance.\n\n## Original source section: development-02\n\ndevelopment policy group 2. Development mentor check-ins occur every Friday.\n\n",
+      "document_id": "policy-pack-04",
+      "filename": "documents/policy-pack-04.md",
+      "sha256": "5f68ed0148e38606340279c68299f3ad2b94e93f51aff768c4f84b140b947f65",
+      "page": 0,
+      "section": "text",
+      "distance": 0.5584912896156311
+    }
+  ],
+  "error": "",
+  "content_sha256": "99a37c3762afe06d75a31aabcd33340839bc05cc0e0d26a37ada94c7418472fa"
+}

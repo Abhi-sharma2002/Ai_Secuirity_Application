@@ -106,8 +106,8 @@ def test_real_workspace_views_hide_sensitive_source_values(page, session):
         rendered = '\n'.join(str(element.value) for kind in ('text', 'json', 'caption', 'warning')
                              for element in app.get(kind))
         if 'local_search' in session:
-            assert POLICY not in rendered
-            assert 'Source: policy.txt' in rendered
+            assert POLICY in rendered
+            assert any('policy.txt' in element.label for element in app.expander)
         else:
             assert POLICY in rendered
         assert all(s not in rendered for s in (KEY, EMAIL, CANARY))

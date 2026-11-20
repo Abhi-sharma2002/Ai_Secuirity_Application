@@ -1,0 +1,27 @@
+{
+  "case_id": "final-11",
+  "query": "How many annual leave days are available?",
+  "doc_ids": [
+    "policy-pack-17"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-17_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-11\n\nfinal policy group 11. Annual leave entitlement is 18 days.\n\n\n## Original source section: final-14\n\nfinal policy group 14. Contact the internal IT desk for password resets.\n\n",
+      "document_id": "policy-pack-17",
+      "filename": "documents/policy-pack-17.md",
+      "sha256": "64c9b9378403443ab8b47326b60cb95a19144023471604dd81439445ebfe68e2",
+      "page": 0,
+      "section": "text",
+      "distance": 0.46711546182632446
+    }
+  ],
+  "error": "",
+  "content_sha256": "82d7a4b2dff749d4507c62e07d0bcc8869bc01f61d9ae16d1d5e3a1198e67025"
+}

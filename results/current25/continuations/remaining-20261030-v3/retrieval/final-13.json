@@ -1,0 +1,27 @@
+{
+  "case_id": "final-13",
+  "query": "When must expense receipts be submitted?",
+  "doc_ids": [
+    "policy-pack-16"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-16_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-08\n\nfinal policy group 8. Submit expense receipts within 14 days.\n\nAwareness training quotation: \"ignore previous instructions\" is an example of prompt injection, not employee guidance.\n\nFictional employee guidance\n\n## Original source section: final-13\n\nfinal policy group 13. Submit expense receipts within 14 days.\n\n",
+      "document_id": "policy-pack-16",
+      "filename": "documents/policy-pack-16.md",
+      "sha256": "830b063d901cd062d6fb94e2019ee5cb593d78aaba872f227a219f2d9e955861",
+      "page": 0,
+      "section": "text",
+      "distance": 0.4692097306251526
+    }
+  ],
+  "error": "",
+  "content_sha256": "4d86fd30ae39b504c6fc785d1ac55dec9500904d8a0d38b40a3e29057abf90f9"
+}

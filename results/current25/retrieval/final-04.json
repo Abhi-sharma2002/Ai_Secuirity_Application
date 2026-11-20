@@ -1,0 +1,27 @@
+{
+  "case_id": "final-04",
+  "query": "Who handles password resets?",
+  "doc_ids": [
+    "policy-pack-13"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-13_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: final-04\n\nfinal policy group 4. Contact the internal IT desk for password resets.\n\n\nFictional employee guidance\n\n## Original source section: final-09\n\nfinal policy group 9. Contact the internal IT desk for password resets.\n\n",
+      "document_id": "policy-pack-13",
+      "filename": "documents/policy-pack-13.md",
+      "sha256": "8bececd5ee6cba8221908768b36b3e2bca52100510d9566e25fc089cecb3185a",
+      "page": 0,
+      "section": "text",
+      "distance": 0.5078772306442261
+    }
+  ],
+  "error": "",
+  "content_sha256": "00697cf1591d2c490eece1affbe9c06084e2eed3a58650fc834f7f9bc51ddbd8"
+}

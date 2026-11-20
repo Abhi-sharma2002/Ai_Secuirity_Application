@@ -21,3 +21,6 @@ starlette==1.8.0
 websockets==16.1.1
 python-dotenv==1.2.4
 PyYAML==6.0.3
+# Microsoft OIDC in Streamlit and signed API access-token verification.
+PyJWT[crypto]==2.15.0
+Authlib==1.9.3

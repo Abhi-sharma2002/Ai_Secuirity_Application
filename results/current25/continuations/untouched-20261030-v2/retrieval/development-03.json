@@ -1,0 +1,27 @@
+{
+  "case_id": "development-03",
+  "query": "What is the meal claim cap?",
+  "doc_ids": [
+    "policy-pack-05"
+  ],
+  "index_identity": {
+    "manifest_sha256": "940a9f94eb2304d0fe458c693193876f2a9b265748c73e5f0a6a2d1def7010aa",
+    "config_sha256": "1a98c89a0e30959950efbb471fa76575e820a080494197938a0c30949da71d82",
+    "embedding_sha256": "355e70c295612f1e3a005754831ebc6c4502eb923bed0f3f7887b7a55a5fbdbd",
+    "generation": "dc72b216e0dc4f3c91ff7bf78fafe14b"
+  },
+  "hits": [
+    {
+      "id": "policy-pack-05_block_000_001",
+      "text": "# Fictional employee policy collection\n\n## Original source section: development-03\n\ndevelopment policy group 3. Development meal claims have a 250 rupee cap.\n\n\n## Original source section: development-04\n\ndevelopment policy group 4. Development laptops lock after 5 minutes.\n\n\nFictional employee guidance\n",
+      "document_id": "policy-pack-05",
+      "filename": "documents/policy-pack-05.md",
+      "sha256": "ee35e8cedcf3c0c06488a7beeab27da96ed7f6b8d5f2f89b072026711e27934a",
+      "page": 0,
+      "section": "text",
+      "distance": 0.5290056467056274
+    }
+  ],
+  "error": "",
+  "content_sha256": "3ba1b340c43d8a3629a4e6c1ffbaa55fb5e79c6e2e12e2ffa1471c8e4dd2fbce"
+}

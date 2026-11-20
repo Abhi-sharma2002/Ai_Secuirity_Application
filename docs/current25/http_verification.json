@@ -1,0 +1,9 @@
+{
+  "loopback_http_checks": "passed",
+  "current_documents": 25,
+  "current_rows": 0,
+  "current_privacy_planned_rows": 375,
+  "historical_rows": 141,
+  "local_search": "passed",
+  "provider_calls": 0
+}

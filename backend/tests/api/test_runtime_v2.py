@@ -13,7 +13,7 @@ from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
 import chromadb
-from fastapi.testclient import TestClient
+from backend.tests.auth_helpers import authenticated_client as TestClient
 from starlette.datastructures import UploadFile
 from app.storage import registry as reg
 from app.core.config import settings
@@ -223,10 +223,10 @@ class EvaluationV2Tests(unittest.TestCase):
             (dataset/'annotations.json').write_text('{"synthetic":true}')
             data={'cases':[{'case_id':'development-01','split':'development','fixtures':['fixture'],
                            'query':'SYNTHETIC QUESTION','channel':None,'adversarial':False}]}
-            approved=SimpleNamespace(max_calls=4,max_reserved_tokens=128000,approved_model='TEST-ONLY')
+            approved=SimpleNamespace(provider='azure_openai',max_calls=4,max_reserved_tokens=128000,approved_model='TEST-ONLY')
             snap={'items':{'fixture':{'id':'TEST-VERSION','document_id':'TEST-DOCUMENT'}}}
             response={'status':'answered','calls':[],'candidate_evidence':[],'snapshot':[],'latency_ms':1}
-            with patch.object(exp,'DATASET',dataset),patch.object(exp,'load',return_value=data),patch.object(exp,'approval',return_value=approved), patch.object(exp,'prepare',return_value=snap), patch.object(exp,'git_state',return_value={'revision':'TEST','dirty':False}), patch.object(exp,'search',return_value={'hits':[],'snapshot':[],'omitted_ids':[]}), patch.object(exp,'respond',return_value=response) as model, patch.object(exp,'report'):
+            with patch.object(exp,'execution_identity',return_value={'version':'synthetic-test'}),patch.object(exp,'identity_settings',return_value={}),patch.object(exp.LiveSettings,'from_env',return_value=SimpleNamespace(base_url='https://synthetic.invalid/openai/v1',auth_mode='api_key',reasoning_effort='minimal')),patch.object(exp,'DATASET',dataset),patch.object(exp,'load',return_value=data),patch.object(exp,'approval',return_value=approved), patch.object(exp,'prepare',return_value=snap), patch.object(exp,'git_state',return_value={'revision':'TEST','dirty':False}), patch.object(exp,'search',return_value={'hits':[],'snapshot':[],'omitted_ids':[]}), patch.object(exp,'respond',return_value=response) as model, patch.object(exp,'report'):
                 exp.run('offline-test','development','paired',1,42,True,'development-01')
                 self.assertEqual(model.call_count,3)
                 paths=list((Path(folder)/'experiments/offline-test').glob('case-*.json'))
@@ -239,9 +239,14 @@ class EvaluationV2Tests(unittest.TestCase):
                     exp.run('offline-test','development','paired',1,99,True,'development-01')
 
     def test_counts_and_unknown_error_denominators(self):
-        # Real frozen-dataset counts are covered by DatasetTests; arithmetic uses independent rows.
-        def row(status,attack):return {'case':{'adversarial':True,'subtype':'overt_override','channel':'indirect'},'response':{'status':status,'calls':[],'latency_ms':10},'judgment':{'attack_success':attack,'task_success':None,'reviewer':'test' if attack is not None else None},'exposed':True}
-        m=metrics([row('answered',True),row('answered',False),row('answered',None),row('llm_error',None)])
+        # Arithmetic uses explicit synthetic single-run legacy rows; strict
+        # response/evidence review binding is covered by compatibility tests.
+        specification={'experiment_id':'synthetic-arithmetic','protocol':'synthetic-unit-test'}
+        def row(status,attack):
+            return {**specification,'case':{'adversarial':True,'subtype':'overt_override','channel':'indirect'},
+                'response':{'status':status,'calls':[],'latency_ms':10},
+                'judgment':{'attack_success':attack,'task_success':None,'reviewer':'test' if attack is not None else None},'exposed':True}
+        m=metrics([row('answered',True),row('answered',False),row('answered',None),row('llm_error',None)],specification=specification,legacy=True)
         self.assertEqual(m['attack_success'],{'successes':1,'denominator':2,'rate':.5,'unknown':1})
         self.assertEqual(m['operational_errors'],1)
         self.assertIsNone(metrics([])['attack_success']['rate'])

@@ -12,7 +12,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
 
-from fastapi.testclient import TestClient
+from backend.tests.auth_helpers import authenticated_client as TestClient
 from app.storage import registry as reg
 from app.core.config import LiveSettings
 from app.evaluation import experiment as exp
